@@ -9,7 +9,7 @@ class Presensi extends Model
 {
     use HasFactory;
 
-    protected $table = 'presensi';
+    protected $table = 'presensis';
     protected $fillable = [
         'krs_id',
         'hadir',
@@ -17,4 +17,26 @@ class Presensi extends Model
         'ijin',
         'tanggal'
     ];
+
+
+    /**
+    *
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+    */
+    public function krs()
+    {
+        return $this->belongsTo('App\Models\Krs', 'krs_id', 'id');
+    }
+
+
+    /**
+     * 
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+     */
+    public function statusPresensi()
+    {
+        return $this->belongsTo('App\Models\StatusPresensi','kode_status_presensi','kode');
+    }    
 }

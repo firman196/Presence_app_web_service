@@ -13,14 +13,32 @@ class CreatePresensisTable extends Migration
      */
     public function up()
     {
-        Schema::create('presensi', function (Blueprint $table) {
+        Schema::create('presensis', function (Blueprint $table) {
             $table->id();
-            $table->integer('krs_id');
-            $table->smallInteger('hadir')->length(6)->default(0);
-            $table->smallInteger('sakit')->length(6)->default(0);
-            $table->smallInteger('ijin')->length(6)->default(0);
-            $table->date('tanggal');
+            $table->bigInteger('krs_id');
+            $table->string('kode_status_presensi',5);
+            $table->integer('pertemuan_ke');
+            $table->date('tanggal_presensi');
+            $table->time('jam_presensi_dibuka');
+            $table->time('jam_presensi_ditutup');
+            $table->time('toleransi');
+            $table->string('kode_beacon',10);
             $table->timestamps();
+
+           /* //relasi ke tabel status presensi
+            $table->foreign('kode_status_presensi')
+                ->references('kode')
+                ->on('status_presensis')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            
+            //relasi ke tabel krs
+            $table->foreign('krs_id')
+                ->references('id')
+                ->on('krs')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');*/
+
         });
     }
 
@@ -31,6 +49,6 @@ class CreatePresensisTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('presensi');
+        Schema::dropIfExists('presensis');
     }
 }

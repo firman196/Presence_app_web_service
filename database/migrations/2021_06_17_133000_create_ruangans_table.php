@@ -13,7 +13,7 @@ class CreateRuangansTable extends Migration
      */
     public function up()
     {
-        Schema::create('ruangan', function (Blueprint $table) {
+        Schema::create('ruangans', function (Blueprint $table) {
             $table->string('kode_ruang',10);
             $table->string('nama_ruang',25);
             $table->smallInteger('kapasitas_ruang_kuliah')->length(6)->default(0);

@@ -15,7 +15,37 @@ class Controller extends BaseController
 
 
     public function __construct(){
-        $this->mahasiswa    = new \App\Repositories\MahasiswaRepository;
-        $this->user         = new \App\Repositories\UserRepository;
+        $this->mahasiswa    = new \App\Services\MahasiswaService;
+        $this->beacon       = new \App\Services\BeaconService;
+        $this->user         = new \App\Services\UserService;
+        $this->prodi        = new \App\Services\ProdiService;
+        $this->kelas        = new \App\Services\KelasService;
+        $this->dosen        = new \App\Services\DosenService;
+        $this->ruangan      = new \App\Services\RuanganService;
+        $this->matakuliah   = new \App\Services\MatakuliahService;
+        $this->jadwal       = new \App\Services\JadwalService;
+        $this->hari         = new \App\Services\HariService;
+        $this->jenisIzin    = new \App\Services\JenisIzinService;
+
+
     }
+
+
+    public function uploadFoto($file, $oldFile){
+        if($oldFile != null) {
+            $pathFile = $destinationPath.$oldFile;
+            if(File::exists($pathFile)){
+                File::delete($pathFile);
+            }
+        }
+
+        $setFile = str_replace(' ', '', strtolower($request['nama']));
+        $filename = date("dmY").'_'.$setFile.'.'.$file->getClientOriginalExtension();
+        if(!File::exists($destinationPath.$filename)){
+            $file->move($destinationPath, $filename);
+        }
+    }
+
+
+   
 }

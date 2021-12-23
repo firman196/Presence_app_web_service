@@ -1,0 +1,35 @@
+/** logo upload css **/
+.logoset{
+	width: 200px;
+}
+.logoset .title{
+	font-weight: bold;
+	font-size: 0.8em;
+	margin-bottom: 0.8;
+}
+.logoset .favicon,
+.logoset .logo{
+	border: 2px dashed #ccc;
+	padding: 12px;
+	text-align: center;
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 100%;
+}
+.logoset .logo img{
+	margin-bottom: 0.8em;
+    margin-top: 0.8em;
+	max-width: 100%;
+    max-height: 100%;
+    position: inherit;
+}
+.logoset .favicon img{
+	margin-bottom: 12px;
+	width: 30%;
+}
+
+.img-show{
+    max-width: 100%;
+    max-height: 100%;
+    position: inherit;
+}

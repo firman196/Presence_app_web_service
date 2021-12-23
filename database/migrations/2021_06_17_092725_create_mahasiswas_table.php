@@ -13,24 +13,40 @@ class CreateMahasiswasTable extends Migration
      */
     public function up()
     {
-        Schema::create('mahasiswa', function (Blueprint $table) {
-            $table->string('nim',15)->unique();
-            $table->string('nik',25);
+        Schema::create('mahasiswas', function (Blueprint $table) {
+            $table->string('nim',15)->primary();
             $table->string('nama',50);
-            $table->char('angkatan',4);
             $table->string('kode_prodi',10);
-            $table->smallInteger('kelas_id',6);
-            $table->text('alamat')->nullable();
-            $table->string('kode_pos',10)->nullable();
-            $table->string('agama',50);
-            $table->char('jenis_kelamin',4);
-            $table->integer('semester')->default('0');
-            $table->string('telp',50)->nullable();
-            $table->string('email',25)->nullable();
+            $table->bigInteger('kelas_id');
             $table->string('dosen',25);
-            $table->string('foto',100)->nullable();
-            $table->enum('status',[0,1])->default(0);
+            $table->string('foto',255)->nullable();
+            $table->string('password',255);
+            $table->string('email',50)->nullable();
+            $table->integer('semester')->default('0');
+            $table->enum('status',[0,1])->default(0)->comment('0 : Nonaktif, 1 : Aktif');
+            $table->string('telp',20)->nullable();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->rememberToken();
             $table->timestamps();
+          
+         /*   //relasi ke tabel kelas
+            $table->foreign('kelas_id')
+                ->references('id')
+                ->on('kelas')
+                ->onUpdate('cascade');
+
+            //relasi ke tabel dosen
+            $table->foreign('dosen')
+                ->references('nik')
+                ->on('dosens')
+                ->onUpdate('cascade');
+
+            //relasi ke tabel prodi
+            $table->foreign('kode_prodi')
+                ->references('kode_prodi')
+                ->on('prodis')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');*/
         });
     }
 
@@ -41,6 +57,6 @@ class CreateMahasiswasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mahasiswa');
+        Schema::dropIfExists('mahasiswas');
     }
 }

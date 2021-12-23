@@ -14,14 +14,21 @@ class CreateMatakuliahsTable extends Migration
     public function up()
     {
         Schema::create('matakuliah', function (Blueprint $table) {
-            $table->string('kode_matakuliah',15);
+            $table->string('kode_matakuliah',15)->primary();
             $table->string('nama_matakuliah',50);
-            $table->char('sifat_matakuliah',1)->comment('W: wajib , P: pilihan');
-            $table->char('jenis_matakuliah',1)->comment('T: teori, P: praktikum');
-            $table->tinyInteger('sks')->length(4)->default(0);
+            $table->enum('sifat_matakuliah',['W','P'])->default('W')->comment('W: wajib , P: pilihan');
+            $table->enum('jenis_matakuliah',['T','P'])->default('T')->comment('T: teori, P: praktikum');
+            $table->integer('sks')->default(0);
             $table->string('kode_prodi',10);
-            $table->tinyInteger('semester',4);
+            $table->integer('semester')->default(0);
             $table->timestamps();
+
+            //relasi ke tabel prodi
+            $table->foreign('kode_prodi')
+                ->references('kode_prodi')
+                ->on('prodis')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
     }
 

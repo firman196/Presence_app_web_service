@@ -12,7 +12,21 @@ class Beacon extends Model
     protected $table = 'beacons';
     protected $fillable = [
         'kode_ruang',
+        'nama',
         'uuid',
-        'jarak_max'
+        'jarak_max',
+        'keterangan',
+        'status'
     ];
+
+      /**
+    * 
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+    */
+    public function ruangan()
+    {
+        return $this->belongsTo('App\Models\Ruangan', 'kode_ruang', 'kode_ruang');
+    }
+
 }

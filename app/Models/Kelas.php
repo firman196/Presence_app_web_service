@@ -13,4 +13,26 @@ class Kelas extends Model
     protected $fillable = [
         'nama_kelas',
     ];
+
+
+    /**
+    * 
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\hasMany
+    */
+    public function jadwal()
+    {
+        return $this->hasMany('App\Models\Jadwal', 'kelas_id', 'id');
+    }
+
+    /**
+    * 
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\hasMany
+    */
+    public function mahasiswa()
+    {
+        return $this->hasMany('App\Models\Mahasiswa', 'kelas_id', 'id');
+    }
+    
 }

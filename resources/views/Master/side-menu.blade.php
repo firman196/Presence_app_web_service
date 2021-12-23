@@ -23,238 +23,81 @@
           <!-- Nav items -->
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link active" href="#navbar-dashboards" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-dashboards">
-                <i class="ni ni-shop text-primary"></i>
-                <span class="nav-link-text">Dashboards</span>
+              <a class="nav-link" href="#">
+                <i class="ni ni-chart-pie-35 text-info"></i>
+                <span class="nav-link-text">Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{ Route::is('mahasiswa.index') || Route::is('dosen.index') ? 'active' : '' }}" href="#navbar-dashboards" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-dashboards">
+                <i class="ni ni-archive-2 text-green"></i>
+                <span class="nav-link-text">Master Data</span>
               </a>
               <div class="collapse show" id="navbar-dashboards">
                 <ul class="nav nav-sm flex-column">
                   <li class="nav-item">
-                    <a href="dashboard.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> D </span>
-                      <span class="sidenav-normal"> Dashboard </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="alternative.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> A </span>
-                      <span class="sidenav-normal"> Alternative </span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-examples">
-                <i class="ni ni-ungroup text-orange"></i>
-                <span class="nav-link-text">Examples</span>
-              </a>
-              <div class="collapse" id="navbar-examples">
-                <ul class="nav nav-sm flex-column">
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/examples/pricing.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> P </span>
-                      <span class="sidenav-normal"> Pricing </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/examples/login.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> L </span>
-                      <span class="sidenav-normal"> Login </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/examples/register.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> R </span>
-                      <span class="sidenav-normal"> Register </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/examples/lock.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> L </span>
-                      <span class="sidenav-normal"> Lock </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/examples/timeline.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> T </span>
-                      <span class="sidenav-normal"> Timeline </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/examples/profile.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> P </span>
-                      <span class="sidenav-normal"> Profile </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/examples/rtl-support.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> RP </span>
-                      <span class="sidenav-normal"> RTL Support </span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#navbar-components" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-components">
-                <i class="ni ni-ui-04 text-info"></i>
-                <span class="nav-link-text">Components</span>
-              </a>
-              <div class="collapse" id="navbar-components">
-                <ul class="nav nav-sm flex-column">
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/components/buttons.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> B </span>
-                      <span class="sidenav-normal"> Buttons </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/components/cards.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> C </span>
-                      <span class="sidenav-normal"> Cards </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/components/grid.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> G </span>
-                      <span class="sidenav-normal"> Grid </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/components/notifications.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> N </span>
-                      <span class="sidenav-normal"> Notifications </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/components/icons.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> I </span>
-                      <span class="sidenav-normal"> Icons </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/components/typography.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> T </span>
-                      <span class="sidenav-normal"> Typography </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#navbar-multilevel" class="nav-link" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-multilevel">
+                    <a href="{{ route('mahasiswa.index') }}" class="nav-link  {{ Route::is('mahasiswa.index') ? 'active' : '' }}">
                       <span class="sidenav-mini-icon"> M </span>
-                      <span class="sidenav-normal"> Multi level </span>
-                    </a>
-                    <div class="collapse show" id="navbar-multilevel" style="">
-                      <ul class="nav nav-sm flex-column">
-                        <li class="nav-item">
-                          <a href="#!" class="nav-link ">Third level menu</a>
-                        </li>
-                        <li class="nav-item">
-                          <a href="#!" class="nav-link ">Just another link</a>
-                        </li>
-                        <li class="nav-item">
-                          <a href="#!" class="nav-link ">One last link</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#navbar-forms" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-forms">
-                <i class="ni ni-single-copy-04 text-pink"></i>
-                <span class="nav-link-text">Forms</span>
-              </a>
-              <div class="collapse" id="navbar-forms">
-                <ul class="nav nav-sm flex-column">
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/forms/elements.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> E </span>
-                      <span class="sidenav-normal"> Elements </span>
+                      <span class="sidenav-normal"> Mahasiswa </span>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/forms/components.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> C </span>
-                      <span class="sidenav-normal"> Components </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/forms/validation.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> V </span>
-                      <span class="sidenav-normal"> Validation </span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#navbar-tables" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
-                <i class="ni ni-align-left-2 text-default"></i>
-                <span class="nav-link-text">Tables</span>
-              </a>
-              <div class="collapse" id="navbar-tables">
-                <ul class="nav nav-sm flex-column">
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/tables/tables.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> T </span>
-                      <span class="sidenav-normal"> Tables </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/tables/sortable.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> S </span>
-                      <span class="sidenav-normal"> Sortable </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/tables/datatables.html" class="nav-link">
+                    <a href="{{ route('dosen.index') }}" class="nav-link">
                       <span class="sidenav-mini-icon"> D </span>
-                      <span class="sidenav-normal"> Datatables </span>
+                      <span class="sidenav-normal"> Dosen </span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('hari.index') }}" class="nav-link">
+                      <span class="sidenav-mini-icon"> H </span>
+                      <span class="sidenav-normal"> Hari </span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('kelas.index') }}" class="nav-link">
+                      <span class="sidenav-mini-icon"> K </span>
+                      <span class="sidenav-normal"> Kelas </span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('prodi.index') }}" class="nav-link">
+                      <span class="sidenav-mini-icon"> P </span>
+                      <span class="sidenav-normal"> Prodi </span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('ruangan.index') }}" class="nav-link">
+                      <span class="sidenav-mini-icon"> R </span>
+                      <span class="sidenav-normal"> Ruangan </span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('matakuliah.index') }}" class="nav-link">
+                      <span class="sidenav-mini-icon"> M </span>
+                      <span class="sidenav-normal"> Matakuliah </span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('jadwal.index') }}" class="nav-link">
+                      <span class="sidenav-mini-icon"> J </span>
+                      <span class="sidenav-normal"> Jadwal </span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('jenis-izin.index') }}" class="nav-link">
+                      <span class="sidenav-mini-icon"> J </span>
+                      <span class="sidenav-normal"> Jenis Izin </span>
                     </a>
                   </li>
                 </ul>
               </div>
             </li>
+          </ul>
+          <ul class="navbar-nav mb-md-3">
             <li class="nav-item">
-              <a class="nav-link" href="#navbar-maps" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-maps">
-                <i class="ni ni-map-big text-primary"></i>
-                <span class="nav-link-text">Maps</span>
-              </a>
-              <div class="collapse" id="navbar-maps">
-                <ul class="nav nav-sm flex-column">
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/maps/google.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> G </span>
-                      <span class="sidenav-normal"> Google </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://demos.creative-tim.com/argon-dashboard-pro/pages/maps/vector.html" class="nav-link">
-                      <span class="sidenav-mini-icon"> V </span>
-                      <span class="sidenav-normal"> Vector </span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard-pro/pages/widgets.html">
-                <i class="ni ni-archive-2 text-green"></i>
-                <span class="nav-link-text">Widgets</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard-pro/pages/charts.html">
-                <i class="ni ni-chart-pie-35 text-info"></i>
-                <span class="nav-link-text">Charts</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard-pro/pages/calendar.html">
-                <i class="ni ni-calendar-grid-58 text-red"></i>
-                <span class="nav-link-text">Calendar</span>
+              <a class="nav-link {{ Route::is('beacon.index') ? 'active' : '' }}" href="{{ route('beacon.index') }}">
+                <i class="ni ni-button-power text-red"></i>
+                <span class="nav-link-text">Data Beacon</span>
               </a>
             </li>
           </ul>
@@ -268,29 +111,12 @@
           <!-- Navigation -->
           <ul class="navbar-nav mb-md-3">
             <li class="nav-item">
-              <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard-pro/docs/getting-started/overview.html" target="_blank">
+              <a class="nav-link" href="#" target="_blank">
                 <i class="ni ni-spaceship"></i>
-                <span class="nav-link-text">Getting started</span>
+                <span class="nav-link-text">Dokumentasi</span>
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard-pro/docs/foundation/colors.html" target="_blank">
-                <i class="ni ni-palette"></i>
-                <span class="nav-link-text">Foundation</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard-pro/docs/components/alerts.html" target="_blank">
-                <i class="ni ni-ui-04"></i>
-                <span class="nav-link-text">Components</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard-pro/docs/plugins/charts.html" target="_blank">
-                <i class="ni ni-chart-pie-35"></i>
-                <span class="nav-link-text">Plugins</span>
-              </a>
-            </li>
+         
           </ul>
         </div>
       </div>

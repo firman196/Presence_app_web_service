@@ -19,6 +19,35 @@ class Ruangan extends Model
     ];
 
 
+    /**
+     * Get all of the comments for the Prodi
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+     */
+    public function prodi()
+    {
+        return $this->belongsTo('App\Models\Prodi', 'kode_prodi', 'kode_prodi');
+    }
 
+
+    /**
+    * 
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\hasMany
+    */
+    public function jadwal()
+    {
+        return $this->hasMany('App\Models\Jadwal', 'kode_ruang', 'kode_ruang');
+    }
+
+    /**
+    * 
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\hasMany
+    */
+    public function beacon()
+    {
+        return $this->hasMany('App\Models\Beacon', 'kode_ruang', 'kode_ruang');
+    }
 
 }

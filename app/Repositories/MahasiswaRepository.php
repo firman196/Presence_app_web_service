@@ -17,6 +17,28 @@ class MahasiswaRepository {
         return $datas;
     }
 
+    
+    public function store(array $data) {
+        $datas = $this->model->insert($data);
+        return $datas;
+    }
+
+    public function update(array $where, array $data) {
+        $datas = $this->model->where($where)
+                ->update($data);
+        return $datas;
+    }
+
+    public function delete(array $where) {
+        $datas = $this->model->where($where)->delete();
+        return $datas;
+    }
+    public function findBy(array $where) {
+        $datas = $this->model->where($where)->first();
+        return $datas;
+    }
+/*
+
     public function allBy(array $where) {
         $datas = $this->model->where($where)->get();
         return $datas;
@@ -62,16 +84,6 @@ class MahasiswaRepository {
         return $datas;
     }
 
-    public function store(array $data) {
-        $datas = $this->model->insert($data);
-        return $datas;
-    }
-
-    public function update($id, array $data) {
-        $datas = $this->model->where('id', $id)
-                ->update($data);
-        return $datas;
-    }
 
     public function delete($id) {
         $datas = $this->model->where('id', $id)->delete();
@@ -82,6 +94,6 @@ class MahasiswaRepository {
         $datas = $this->model->where($data)->delete();
         return $datas;
     }
-
+*/
     
 }
