@@ -12,6 +12,7 @@ use App\Models\Jadwal;
 use App\Models\JenisIzin;
 use App\Models\Mahasiswa;
 use App\Models\Ruangan;
+use App\Models\Krs;
 
 class DataTableController extends Controller
 {
@@ -22,6 +23,7 @@ class DataTableController extends Controller
      */
     public function hari(Request $request)
     {
+        if ($request->ajax()) {
             $datas = Hari::all();
 
             return DataTables::of($datas)
@@ -35,6 +37,7 @@ class DataTableController extends Controller
                 ->rawColumns(['action'])
                 ->escapeColumns()
                 ->toJson();
+        }
     }
 
     
@@ -45,7 +48,7 @@ class DataTableController extends Controller
      */
     public function dataTableMahasiswa(Request $request)
     {
-        
+        if ($request->ajax()) {
             $datas = Mahasiswa::all();
 
             return DataTables::of($datas)
@@ -66,10 +69,15 @@ class DataTableController extends Controller
                             <button type="button" class="hapus btn btn-sm btn-danger" data-id="'.\Crypt::encrypt($row->nim).'"> <i class="fas fa-trash"></i> Hapus</button>';
                     return $btn;
                 })
-                ->rawColumns(['action','gambar'])
+                ->addColumn('action2', function($row){
+                    $ids = \Crypt::encrypt($row->nim);
+                    $btn = '<a href="/krs/'.$ids.'" class="hapus btn btn-sm btn-success"> <i class="fas fa-eye"></i> Tambah Krs</a>';
+                    return $btn;
+                })
+                ->rawColumns(['action','action2','gambar'])
                 ->escapeColumns()
                 ->toJson(); 
-        
+        }
         
     }
 
@@ -80,7 +88,7 @@ class DataTableController extends Controller
      */
     public function dataTableDosen(Request $request)
     {
-        
+        if ($request->ajax()) {
             $datas = Dosen::all();
 
             return DataTables::of($datas)
@@ -111,7 +119,8 @@ class DataTableController extends Controller
                 })
                 ->rawColumns(['action','gambar'])
                 ->escapeColumns()
-                ->toJson(); 
+                ->toJson();
+        }
     }
 
     /**
@@ -121,6 +130,7 @@ class DataTableController extends Controller
      */
     public function jenisIzin(Request $request)
     {
+        if ($request->ajax()) {
             $datas = JenisIzin::orderBy('kode','asc')->get();
 
             return DataTables::of($datas)
@@ -134,6 +144,7 @@ class DataTableController extends Controller
                 ->rawColumns(['action'])
                 ->escapeColumns()
                 ->toJson(); 
+        }
     }
 
 
@@ -144,6 +155,7 @@ class DataTableController extends Controller
      */
     public function ruangan(Request $request)
     {
+        if ($request->ajax()) {
             $datas = Ruangan::with(['prodi','beacon'])->get();
            
             return DataTables::of($datas)
@@ -170,6 +182,7 @@ class DataTableController extends Controller
                 ->rawColumns(['action','action2'])
                 ->escapeColumns()
                 ->toJson(); 
+        }
     }
 
 
@@ -180,6 +193,7 @@ class DataTableController extends Controller
      */
     public function prodi(Request $request)
     {
+        if ($request->ajax()) {
             $datas = $this->prodi->getWithDosen();
            
             return DataTables::of($datas)
@@ -196,8 +210,7 @@ class DataTableController extends Controller
                 ->rawColumns(['action'])
                 ->escapeColumns()
                 ->toJson(); 
-        
-        
+        }
     }
 
 
@@ -208,6 +221,7 @@ class DataTableController extends Controller
      */
     public function kelas(Request $request)
     {
+        if ($request->ajax()) {
             $datas = $this->kelas->getAll();
 
             return DataTables::of($datas)
@@ -220,8 +234,7 @@ class DataTableController extends Controller
                 ->rawColumns(['action'])
                 ->escapeColumns()
                 ->toJson();
-        
-        
+        }
     }
 
 
@@ -232,6 +245,7 @@ class DataTableController extends Controller
      */
     public function matakuliah(Request $request)
     {
+        if ($request->ajax()) {
             $datas = $this->matakuliah->getWithProdi();
            
             return DataTables::of($datas)
@@ -249,6 +263,7 @@ class DataTableController extends Controller
                 ->rawColumns(['action','prodi'])
                 ->escapeColumns()
                 ->toJson();
+        }
     }
 
 
@@ -259,6 +274,7 @@ class DataTableController extends Controller
      */
     public function jadwal(Request $request)
     {
+        if ($request->ajax()) {
             $datas = Jadwal::all();
            
             return DataTables::of($datas)
@@ -292,9 +308,10 @@ class DataTableController extends Controller
                             <button type="button" class="hapus btn btn-sm btn-danger" data-id="'.$ids.'"> <i class="fas fa-trash"></i> Hapus</button>';
                     return $btn;
                 })
-                ->rawColumns(['action','jam','matakuliah','ruang','kelas','dosen'])
+                ->rawColumns(['action'])
                 ->escapeColumns()
                 ->toJson();
+        }
     }
 
 
@@ -305,6 +322,7 @@ class DataTableController extends Controller
      */
     public function beacon(Request $request,$id)
     {
+        if ($request->ajax()) {
             $datas   = Beacon::where('kode_ruang',$id)->get();
            
             return DataTables::of($datas)
@@ -319,6 +337,55 @@ class DataTableController extends Controller
                 ->rawColumns(['action'])
                 ->escapeColumns()
                 ->toJson(); 
+        }
     }
+
+
+     /**
+     * Datatable Krs Mahasiswa By Nim
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function krs(Request $request)
+    {
+        if ($request->ajax()) {
+            $ids   = \Crypt::decrypt($request->nim);
+            $datas = Krs::with(['jadwal.matakuliah','jadwal.ruangan','jadwal.kelas','jadwal.dosens','jadwal.hari'])->where('nim',$ids)->get();
+           
+            return DataTables::of($datas)
+                ->addIndexColumn()
+                ->addColumn('jam',function($row){
+                    $jam = $row->jadwal->jam_mulai.' - '.$row->jadwal->jam_selesai;
+                    return $jam;
+                })
+                ->addColumn('matakuliah',function($row){
+                    $matakuliah = (isset($row->jadwal->matakuliah->nama_matakuliah))?$row->jadwal->matakuliah->nama_matakuliah:'';
+                    return $matakuliah;
+                })
+                ->addColumn('ruang',function($row){
+                    $ruangan    = (isset($row->jadwal->ruangan->nama_ruang))?$row->jadwal->ruangan->nama_ruang:'';
+                    return $ruangan;
+                })
+                ->addColumn('kelas',function($row){
+                    $kelas   = (isset($row->jadwal->kelas->nama_kelas))?$row->jadwal->kelas->nama_kelas:'';
+                    return $kelas;
+                })
+                ->addColumn('dosen',function($row){
+                    $nama       = (isset($row->jadwal->dosen->nama))?$row->jadwal->dosen->nama:'';
+                    $depan      = (isset($row->jadwal->dosen->gelar_depan))?$row->jadwal->dosen->gelar_depan:'';
+                    $belakang   = (isset($row->jadwal->dosen->gelar_belakang))?$row->jadwal->dosen->gelar_belakang:'';
+                    $dosen      = $depan.$nama.$belakang;
+                    return $dosen;
+                })
+                ->addColumn('action', function($row){
+                    $btn = '<button type="button" class="tambah-matakuliah btn btn-sm btn-default" > <i class="fas fa-edit"></i> Edit</button>';
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->escapeColumns()
+                ->toJson();
+        }
+    }
+
 
 }

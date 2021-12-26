@@ -56,7 +56,7 @@ class Mahasiswa  extends Authenticatable
     */
     public function dosen()
     {
-        return $this->hasOne('App\Models\Dosen', 'dosen', 'nik');
+        return $this->belongsTo('App\Models\Dosen', 'dosen', 'nik');
     }
 
 
@@ -67,7 +67,7 @@ class Mahasiswa  extends Authenticatable
     */
     public function kelas()
     {
-        return $this->hasOne('App\Models\Kelas', 'kelas_id', 'id');
+        return $this->belongsTo('App\Models\Kelas', 'kelas_id', 'id');
     }
 
     /**

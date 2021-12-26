@@ -89,6 +89,12 @@
                       <span class="sidenav-normal"> Jenis Izin </span>
                     </a>
                   </li>
+                  <li class="nav-item">
+                    <a href="{{ route('krs.index') }}" class="nav-link">
+                      <span class="sidenav-mini-icon"> K </span>
+                      <span class="sidenav-normal"> KRS </span>
+                    </a>
+                  </li>
                 </ul>
               </div>
             </li>

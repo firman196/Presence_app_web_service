@@ -12,6 +12,7 @@ use App\Http\Controllers\Backend\BeaconController;
 use App\Http\Controllers\Backend\HariController;
 use App\Http\Controllers\Backend\JenisIzinController;
 use App\Http\Controllers\Backend\DataTableController;
+use App\Http\Controllers\Backend\KrsController;
 
 
 
@@ -64,12 +65,13 @@ Route::prefix('kelas')->group(function () {
 
 Route::resource('hari', HariController::class);
 Route::resource('jenis-izin', JenisIzinController::class);
-
+Route::resource('krs',KrsController::class);
 Route::prefix('data')->group(function(){
     Route::get('/hari',[DataTableController::class,'hari'])->name('data.hari');
     Route::get('/jenis-izin',[DataTableController::class,'jenisIzin'])->name('data.jenis-izin');
     Route::get('/jadwal',[DataTableController::class, 'jadwal'])->name('data.jadwal');
     Route::get('/beacon/{id}',[DataTableController::class, 'beacon'])->name('data.beacon');
+    Route::get('/krs',[DataTableController::class, 'krs'])->name('data.krs');
 });
 
 Route::prefix('prodi')->group(function () {
