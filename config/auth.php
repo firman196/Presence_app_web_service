@@ -41,10 +41,17 @@ return [
             'provider' => 'mahasiswas',
         ],
 
+        //dosen guard
         'dosen' => [
             'driver' => 'session',
             'provider' => 'dosens',
         ],
+
+        //admin guard
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+         ],
 
         'api' => [
             'driver' => 'sanctum',
@@ -85,6 +92,11 @@ return [
         'dosens' => [
             'driver' => 'eloquent',
             'model' => App\Models\Dosen::class,
+        ],
+
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
         ],
 
         // 'users' => [

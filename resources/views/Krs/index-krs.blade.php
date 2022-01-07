@@ -103,7 +103,7 @@
     
     <!-- modal -->
     <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="modal-label"></h5>
@@ -114,41 +114,31 @@
           
           <form id="form-data" action="#" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}
+            <input type="hidden" name="nim" id="nim_mahasiswa" value="{{ $mahasiswa->nim }}">
             <div class="modal-body">
-              <table  id="datamakul" class="table table-sm table-bordered table-striped shadow-sm " width="100%">
-                <thead>
+              <div class="table-responsive">
+                <table class="table table-flush" id="dataTableJadwalByProdi">
+                  <thead class="thead-light">
                     <tr>
-                        <th><div class="custom-control custom-checkbox"><input type="checkbox" id="checkall" class="checkall" name="checkall"></div></th>
-                        <th>Kode-MataKuliah</th>
-                        <th>Kelas</th>
-                        <th>Sifat</th>
-                        <th>Jenis</th>
-                        <th>SKS</th>
-                        <th>Ruang</th>
+                       <th><div class="custom-control custom-checkbox"><input type="checkbox" id="checkall" class="checkall" name="checkall"></div></th>
+                        <th>Matakuliah</th>
                         <th>Hari</th>
-                        <th>Jam Mulai</th> 
-                        <th>Jam Selesai</th>  
+                        <th>Jam</th>
+                        <th>Kelas</th>
+                        <th>SKS</th>
                         <th>Dosen</th>
-                        <th>Status</th>
                     </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th colspan="5">Total sks dipilih:</th>
-                        <th><span id="checked-prices-total-sum" class="sumchecked" >0</span></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </tfoot>
-              </table>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                 
+                </table>
+               </div>
+               <div class="text-right mt-4">
+                    <a href="#"id="submit-data" class="submit-data btn btn-primary">Simpan</a>
+               </div>
             </div>                            
-            <div class="text-right">
-                <a href="#"id="submit-data" class="submit-data btn btn-primary">Simpan</a>
-            </div>
+           
           </form>
         </div>
       </div>
@@ -171,21 +161,24 @@
             fetch_data();
 
             //event tambah matakuliah
-            $('#dataTable tbody').on('click', '.tambah-matakuliah', function () {
+            $('#tambah').on('click', function () {
               $('#Modal').modal();
-              $('#modal-label').html('Edit Data Kelas');
-              $('#submit-data').html('Update Kelas');
+              $('#modal-label').html('Pilih Jadwal Kuliah Mahasiswa');
+              $('#submit-data').html('Simpan');
 
               var kode_prodi = $('#kode_prodi').val();
               fetch_data_matakuliah(kode_prodi);
 
+               
+
               $('#submit-data').on('click',function(e){
-                  reset_error()
+                  //reset_error()
                   $.ajax({
                       type: 'POST',
                       data: $("#form-data").serialize(),
                       url: "{{ route('krs.store') }}",
                       success : function(data){
+                        console.log(data)
                           if(JSON.parse(data.meta.code) == 200){
                               $('#Modal').modal('hide');
                                   swal.fire("Selesai","Kelas berhasil diupdate","success").then((val)=>{
@@ -207,6 +200,38 @@
               })
 
             })
+
+            $('#dataTable tbody').on('click', '.hapus', function () {
+                  var id          = $(this).data('id');     
+                  $.ajax({
+                        url:"{{ url('krs') }}/"+id,
+                        data:{
+                            "_token": "{{ csrf_token() }}"
+                        },
+                        type:"DELETE",
+                        success : function(data){
+                            if(JSON.parse(data.meta.code) == 200){
+                                $('#Modal').modal('hide');
+                                swal.fire("Selesai","Krs berhasil dihapus","success").then((val)=>{
+                                    location.reload();
+                                });
+                            }
+                        },
+                        error:function(XMLHttpRequest){
+                            toastr.error('Maaf terjadi kesalahan pada sistem. Coba Ulangi lagi !');
+                        }
+                  });
+            });
+
+            //EVENT CHECKALL CHECKBOX
+            $(".checkall").click(function() {
+                var isChecked = $(this).prop('checked');
+                $(".data-check").prop('checked', isChecked);
+                
+            });
+
+            
+           
            
             //fetch data method
             function fetch_data(){  
@@ -248,7 +273,7 @@
                                         "className": "text-center"                                        
                                     },     
                                     {
-                                        data: 'hari_id',
+                                        data: 'hari',
                                         "className": "text-center"                                        
                                     },    
                                     {
@@ -274,6 +299,73 @@
                                         orderable: false, 
                                         searchable: false    
                                     },
+                                ]
+                            });
+                         
+                        }
+
+
+                        //FETCH DATA JADWAL MATAKULIAH BY PRODI
+                        function fetch_data_matakuliah(kode_prodi){            
+                            $('#dataTableJadwalByProdi').DataTable({
+                                pageLength: 10,
+                                lengthChange: true,
+                                bFilter: true,
+                                destroy: true,
+                                processing: true,
+                                serverSide: true,
+                                oLanguage: {
+                                    sZeroRecords: "Tidak Ada Data",
+                                    sSearch: "Pencarian _INPUT_",
+                                    sLengthMenu: "_MENU_",
+                                    sInfo: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                                    sInfoEmpty: "0 data",
+                                    oPaginate: {
+                                        sNext: "<i class='fa fa-angle-right'></i>",
+                                        sPrevious: "<i class='fa fa-angle-left'></i>"
+                                    }
+                                },
+                                ajax: {
+                                    url:"{{route('data.jadwal')}}",
+                                    data: {
+                                      'kode_prodi': kode_prodi
+                                    },
+                                    type: "GET"
+                                },
+                                
+                                columns: [
+                                  { 
+                                    data: null,  width:'5%',
+                                      render: function ( data, type, row ) {
+                                          return '<div class="custom-control custom-checkbox"><input type="checkbox" class="data-check"  name="id_jadwal[]" value="'+row['kode_jadwal']+'" id="id_jadwal"></div>';
+                                      } 
+                                    },
+                                    {
+                                        data: 'matakuliah',
+                                        "className": "text-center"                                        
+                                    },     
+                                    {
+                                        data: 'hari_id',
+                                        "className": "text-center"                                        
+                                    },    
+                                    {
+                                        data: 'jam',
+                                        "className": "text-center"                                        
+                                    },   
+                                    {
+                                        data: 'kelas',
+                                        "className": "text-center"                                        
+                                    }, 
+                                    {
+                                        data: 'sks',
+                                        "className": "text-center"                                        
+                                    },   
+                                    {
+                                        data: 'dosen',
+                                        "className": "text-center"                                        
+                                    }, 
+                                                                    
+                                    
                                 ]
                             });
                          

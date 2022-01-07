@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Http\Requests\AuthLoginRequest;
+use Illuminate\Http\Request;
+use App\Models\Admin;
 
 class LoginController extends Controller
 {
@@ -35,6 +38,47 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+       // $this->middleware('auth')->except('logout');
+    }
+
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
+
+    public function login(AuthLoginRequest $request)
+    {
+       
+        $user   = Admin::where('nip',$request->username)->first();
+       
+        if(!isset($user)){
+            return redirect()->route('login')->with(['error' => 'Username/Password salah!']);
+        }
+       
+        $credentials = [
+            'nip'       => $request->username,
+            'password'  => $request->password,
+            'status'    => '1'
+        ];
+
+    
+        if(auth()->guard('admin')->attempt($credentials)){
+            return redirect()->intended('/');
+        }elseif(auth()->guard('dosen')->attempt($credentials)){
+            return redirect()->intended('/');
+        }else {
+           // return $credentials;
+            return redirect()
+                ->intended('login')
+                ->withInput()
+                ->withErrors(["Incorrect user login details!"]);
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        $this->guard('admin')->logout();
+        session()->flush();
+        return $this->loggedOut($request) ?: redirect(route('login'));
     }
 }

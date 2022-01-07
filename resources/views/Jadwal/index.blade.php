@@ -310,7 +310,7 @@
                                         "className": "text-center"                                        
                                     },     
                                     {
-                                        data: 'hari_id',
+                                        data: 'hari',
                                         "className": "text-center"                                        
                                     },    
                                     {
@@ -325,10 +325,7 @@
                                         data: 'ruang',
                                         "className": "text-center"                                        
                                     },   
-                                    {
-                                        data: 'dosen',
-                                        "className": "text-center"                                        
-                                    }, 
+                                  
                                                                     
                                     {
                                         data: 'action',

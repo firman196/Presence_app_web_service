@@ -23,5 +23,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('login', [AuthController::class, 'login']);
 Route::group(['middleware' => 'auth:sanctum'], function(){
    Route::get('jadwal',[JadwalController::class, 'getJadwal']);
+   Route::get('jadwal/sekarang',[JadwalController::class, 'getJadwalSekarang']);
    Route::get('jadwal/{jadwal}',[JadwalController::class, 'getJadwalById']);
 });

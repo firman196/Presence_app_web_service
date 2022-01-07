@@ -18,7 +18,10 @@ class Jadwal extends Model
         'kode_matakuliah',
         'kode_ruang',
         'kelas_id',
-        'dosen'
+        'dosen',
+        'jam_presensi_dibuka',
+        'jam_presensi_ditutup',
+        'toleransi'
     ];
 
 

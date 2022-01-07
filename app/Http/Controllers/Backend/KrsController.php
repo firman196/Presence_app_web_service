@@ -7,7 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\Mahasiswa;
 use App\Models\Prodi;
 use App\Models\Kelas;
+use App\Models\Krs;
 use App\Models\Dosen;
+use Carbon\Carbon;
+
+use App\Helpers\ResponseFormatter;
 
 class KrsController extends Controller
 {
@@ -46,7 +50,26 @@ class KrsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            $kode_jadwals = $request->id_jadwal;
+            $nim          = $request->nim;
+            $tanggal_krs  = Carbon::now();
+            foreach($kode_jadwals as $kode_jadwal){
+                $data[] = array('kode_jadwal'=>$kode_jadwal,'nim'=>$nim,'tanggal_krs'=>$tanggal_krs);
+            }
+            Krs::insert($data);
+                    
+            return ResponseFormatter::success(
+                'store data successfully',
+                200
+            );
+        }catch(\Exception $e){
+            return ResponseFormatter::error([
+                'message' => 'Something went wrong',
+                'error' => $e->getMessage(),
+            ],'store data failed', 500);
+        }
+        
     }
 
     /**
@@ -61,7 +84,7 @@ class KrsController extends Controller
         $title      = 'Jadwal Matakuliah Diambil';
         $breadcrumb = 'Krs';
         $url        = "/krs";
-        $mahasiswa  = Mahasiswa::with(['prodi','dosen','kelas'])->where('nim',$ids)->first();
+        $mahasiswa  = Mahasiswa::with(['prodi','dosens','kelas'])->where('nim',$ids)->first();
      //   $krs        = Krs::with(['jadwal.matakuliah','jadwal.ruangan','jadwal.kelas','jadwal.dosens','jadwal.hari'])->where('nim',$ids)->first();
 
         return view('Krs.index-krs',compact('mahasiswa','title','breadcrumb','url'));
@@ -98,6 +121,19 @@ class KrsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try{
+            $ids  = \Crypt::decrypt($id); 
+            Krs::where('id',$ids)->delete();
+           
+            return ResponseFormatter::success(
+                'deleted data successfully',
+                200
+            );
+        } catch (\Throwable $e) {
+            return ResponseFormatter::error([
+                'message' => 'Something went wrong',
+                'error' => $e->getMessage(),
+            ],'updated data failed', 500);
+        }     
     }
 }

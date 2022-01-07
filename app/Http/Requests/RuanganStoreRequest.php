@@ -27,7 +27,7 @@ class RuanganStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'kode_ruang'                => 'required|unique:ruangan,kode_ruang|max:10',
+            'kode_ruang'                => 'required|unique:ruangans,kode_ruang|max:10',
             'nama_ruang'                => 'required|max:25',
             'kapasitas_ruang_kuliah'    => 'required|numeric',
             'kapasitas_ruang_ujian'     => 'required|numeric',

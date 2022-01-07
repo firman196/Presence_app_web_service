@@ -13,6 +13,8 @@ class Mahasiswa  extends Authenticatable
    // protected $guard = 'mahasiswa';
     protected $table = 'mahasiswas';
     protected $primaryKey = 'nim';
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $fillable = [
         'nim',
         'nama',
@@ -54,7 +56,7 @@ class Mahasiswa  extends Authenticatable
     *
     * @return \Illuminate\Database\Eloquent\Relations\hasOne
     */
-    public function dosen()
+    public function dosens()
     {
         return $this->belongsTo('App\Models\Dosen', 'dosen', 'nik');
     }

@@ -20,46 +20,63 @@ class JadwalResource extends JsonResource
      
         return [
           
-            'kode_jadwal'       => $this->kode_jadwal,
-            'jam_mulai'         => $this->jam_mulai,
-            'jam_selesai'       => $this->jam_selesai,
-            'hari'              => $this->whenLoaded('hari',function(){
-                return $this->hari->nama_hari;
+            'krs_id'            => $this->id,
+            'kode_jadwal'       => $this->whenLoaded('jadwal',function(){
+                return $this->jadwal->kode_jadwal;
             }),
-            'kode_matakuliah'   => $this->whenLoaded('matakuliah',function(){
-                return $this->matakuliah->kode_matakuliah;
+            'jam_mulai'         => $this->whenLoaded('jadwal',function(){
+                return $this->jadwal->jam_mulai;
             }),
-            'nama_matakuliah'   => $this->whenLoaded('matakuliah',function(){
-                return $this->matakuliah->nama_matakuliah;
+            'jam_selesai'       => $this->whenLoaded('jadwal',function(){
+                return $this->jadwal->jam_selesai;
             }),
-            'sifat_matakuliah'  =>  $this->whenLoaded('matakuliah',function(){
-                return $this->matakuliah->sifat_matakuliah == 'P'?'Pilihan':'Wajib';
+            'hari'              => $this->whenLoaded('jadwal',function(){
+                return $this->jadwal->hari->nama_hari;
             }),
-            'jenis_matakuliah'  => $this->whenLoaded('matakuliah',function(){
-                return $this->matakuliah->jenis_matakuliah == 'T'?'Teori':'Praktikum';
+            'kode_matakuliah'   => $this->whenLoaded('jadwal',function(){
+                return $this->jadwal->matakuliah->kode_matakuliah;
             }),
-            'sks'               =>  $this->whenLoaded('matakuliah',function(){
-                return $this->matakuliah->sks;
+            'nama_matakuliah'   => $this->whenLoaded('jadwal',function(){
+                return $this->jadwal->matakuliah->nama_matakuliah;
             }),
-            'semester'          => $this->whenLoaded('matakuliah',function(){
-                return $this->matakuliah->semester;
+            'sifat_matakuliah'  =>  $this->whenLoaded('jadwal',function(){
+                return $this->jadwal->matakuliah->sifat_matakuliah == 'P'?'Pilihan':'Wajib';
             }),
-            'kode_ruang'        => $this->whenLoaded('ruangan',function(){
-                return $this->ruangan->kode_ruang;
+            'jenis_matakuliah'  => $this->whenLoaded('jadwal',function(){
+                return $this->jadwal->matakuliah->jenis_matakuliah == 'T'?'Teori':'Praktikum';
             }),
-            'nama_ruang'        => $this->whenLoaded('ruangan',function(){
-                return $this->ruangan->nama_ruang;
+            'sks'               =>  $this->whenLoaded('jadwal',function(){
+                return $this->jadwal->matakuliah->sks;
             }),
-            'nama_gedung'       => $this->whenLoaded('ruangan',function(){
-                return  $this->ruangan->nama_gedung;
+            'semester'          => $this->whenLoaded('jadwal',function(){
+                return $this->jadwal->matakuliah->semester;
             }),
-            'kelas'             => $this->whenLoaded('kelas',function(){
-                return  $this->kelas->nama_kelas;
+            'kode_ruang'        => $this->whenLoaded('jadwal',function(){
+                return $this->jadwal->ruangan->kode_ruang;
             }),
-            'nama_dosen'        => $this->whenLoaded('dosens',function(){
-                return $this->dosens->gelar_depan.$this->dosens->nama.$this->dosens->gelar_belakang;
+            'nama_ruang'        => $this->whenLoaded('jadwal',function(){
+                return $this->jadwal->ruangan->nama_ruang;
             }),
-           
+            'nama_gedung'       => $this->whenLoaded('jadwal',function(){
+                return  $this->jadwal->ruangan->nama_gedung;
+            }),
+            'kelas'             => $this->whenLoaded('jadwal',function(){
+                return  $this->jadwal->kelas->nama_kelas;
+            }),
+            'nama_dosen'        => $this->whenLoaded('jadwal',function(){
+                return $this->when(
+                    $this->jadwal->relationLoaded('dosens'), 
+                    fn () => $this->jadwal->dosens->gelar_depan.$this->jadwal->dosens->nama.$this->jadwal->dosens->gelar_belakang
+                );
+            
+               // return $this->jadwal->dosens->gelar_depan.$this->jadwal->dosens->nama.$this->dosens->gelar_belakang;
+            }),
+            'foto_dosen'        =>  $this->whenLoaded('jadwal',function(){
+                return $this->when(
+                    $this->jadwal->relationLoaded('dosens'), 
+                    fn () => config('services.image.baseUrl').config('services.image.path').'/'.$this->jadwal->dosens->foto
+                );
+            }),
 
            
         ];

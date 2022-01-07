@@ -17,11 +17,8 @@ class CreatePresensisTable extends Migration
             $table->id();
             $table->bigInteger('krs_id');
             $table->string('kode_status_presensi',5);
-            $table->integer('pertemuan_ke');
             $table->date('tanggal_presensi');
-            $table->time('jam_presensi_dibuka');
-            $table->time('jam_presensi_ditutup');
-            $table->time('toleransi');
+            $table->time('jam_presensi')->nullable();
             $table->string('kode_beacon',10);
             $table->timestamps();
 

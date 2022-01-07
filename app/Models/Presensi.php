@@ -12,10 +12,10 @@ class Presensi extends Model
     protected $table = 'presensis';
     protected $fillable = [
         'krs_id',
-        'hadir',
-        'sakit',
-        'ijin',
-        'tanggal'
+        'kode_status_presensi',
+        'pertemuan_ke',
+        'tanggal_presensi',
+        'kode_beacon'
     ];
 
 

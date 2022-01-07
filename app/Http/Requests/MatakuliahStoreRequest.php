@@ -28,7 +28,7 @@ class MatakuliahStoreRequest extends FormRequest
     {
         return [
             'kode_matakuliah'                => 'required|unique:matakuliah,kode_matakuliah|max:15',
-            'nama_matakuliah'                => 'required|max:25',
+            'nama_matakuliah'                => 'required|max:50',
             'sifat_matakuliah'               => 'required',
             'jenis_matakuliah'               => 'required',
             'sks'                            => 'required|numeric',

@@ -29,7 +29,7 @@ class MatakuliahUpdateRequest extends FormRequest
         $ids = \Crypt::decrypt($this->id);
         return [
             'kode_matakuliah'                => 'required|max:15|unique:matakuliah,kode_matakuliah,'.$ids.',kode_matakuliah',
-            'nama_matakuliah'                => 'required|max:25',
+            'nama_matakuliah'                => 'required|max:50',
             'sifat_matakuliah'               => 'required',
             'jenis_matakuliah'               => 'required',
             'sks'                            => 'required|numeric',

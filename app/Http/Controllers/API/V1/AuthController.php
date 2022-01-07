@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Helpers\ResponseFormatter;
 use App\Http\Requests\Api\LoginRequest;
 use App\Models\Mahasiswa;
-
+use App\Http\Resources\Mobile\MahasiswaResource;
 
 class AuthController extends Controller
 {
@@ -18,7 +18,7 @@ class AuthController extends Controller
         try {
             
             //get data user by username
-            $user = Mahasiswa::where('nim',$request['nim'])->first();
+            $user = Mahasiswa::with(['prodi','dosens','kelas'])->where('nim',$request['nim'])->first();
             //jika login gagal
             if (!isset($user)) {
                 return ResponseFormatter::error([
@@ -38,7 +38,7 @@ class AuthController extends Controller
                 return ResponseFormatter::success([
                     'access_token' => $tokenResult,
                     'token_type' => 'Bearer',
-                    'user' => $user
+                    'user' => new MahasiswaResource($user)
                 ],'Authenticated');
              
             }

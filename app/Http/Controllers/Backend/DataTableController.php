@@ -13,6 +13,7 @@ use App\Models\JenisIzin;
 use App\Models\Mahasiswa;
 use App\Models\Ruangan;
 use App\Models\Krs;
+use App\Models\Admin;
 
 class DataTableController extends Controller
 {
@@ -275,7 +276,7 @@ class DataTableController extends Controller
     public function jadwal(Request $request)
     {
         if ($request->ajax()) {
-            $datas = Jadwal::all();
+            $datas = Jadwal::with(['matakuliah','ruangan','kelas','dosens','hari'])->get();
            
             return DataTables::of($datas)
                 ->addIndexColumn()
@@ -291,16 +292,32 @@ class DataTableController extends Controller
                     $ruangan    = (isset($row->ruangan->nama_ruang))?$row->ruangan->nama_ruang:'';
                     return $ruangan;
                 })
+                ->addColumn('hari',function($row){
+                    $hari    = (isset($row->hari->nama_hari))?$row->hari->nama_hari:'';
+                    return $hari;
+                })
                 ->addColumn('kelas',function($row){
                     $kelas   = (isset($row->kelas->nama_kelas))?$row->kelas->nama_kelas:'';
                     return $kelas;
                 })
+                ->addColumn('sks',function($row){
+                    $sks   = (isset($row->matakuliah->sks))?$row->matakuliah->sks:'';
+                    return $sks;
+                })
                 ->addColumn('dosen',function($row){
-                    $nama       = (isset($row->dosen->nama))?$row->dosen->nama:'';
-                    $depan      = (isset($row->dosen->gelar_depan))?$row->dosen->gelar_depan:'';
-                    $belakang   = (isset($row->dosen->gelar_belakang))?$row->dosen->gelar_belakang:'';
+                    $nama       = (isset($row->dosens->nama))?$row->dosens->nama:'';
+                    $depan      = (isset($row->dosens->gelar_depan))?$row->dosens->gelar_depan:'';
+                    $belakang   = (isset($row->dosens->gelar_belakang))?$row->dosens->gelar_belakang:'';
                     $dosen      = $depan.$nama.$belakang;
                     return $dosen;
+                })
+                ->addColumn('jam_presensi',function($row){
+                    $jam_presensi   = (isset($row->jam_presensi_dibuka))?$row->presensi->jam_presensi_dibuka:'<span class="badge badge-pill badge-warning">Belum Disetting</span>';
+                    return $jam_presensi;
+                })
+                ->addColumn('toleransi',function($row){
+                    $toleransi   = (isset($row->toleransi))?$row->toleransi:'<span class="badge badge-pill badge-warning">Belum Disetting</span>';
+                    return $toleransi;
                 })
                 ->addColumn('action', function($row){
                     $ids = \Crypt::encrypt($row->kode_jadwal);
@@ -308,7 +325,13 @@ class DataTableController extends Controller
                             <button type="button" class="hapus btn btn-sm btn-danger" data-id="'.$ids.'"> <i class="fas fa-trash"></i> Hapus</button>';
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->addColumn('action2', function($row){
+                    $ids = \Crypt::encrypt($row->kode_jadwal);
+                    $btn = '<button type="button" class="edit btn btn-sm btn-default" data-id="'.$ids.'" data-kode_jadwal="'.$row->kode_jadwal.'" data-kode_matakuliah="'.$row->kode_matakuliah.'" data-hari_id="'.$row->hari_id.'" data-jam_mulai="'.$row->jam_mulai.'" data-jam_selesai="'.$row->jam_selesai.'" data-kode_ruang="'.$row->kode_ruang.'" data-kelas_id="'.$row->kelas_id.'" data-dosen="'.$row->dosen.'"> <i class="ni ni-settings"></i> Setting </button>
+                            <a href="presensi/'.$ids.'" class="btn btn-sm btn-success"> <i class="fas fa-eye"></i> Lihat Presensi</a>';
+                    return $btn;
+                })
+                ->rawColumns(['action','action2','jam_presensi','toleransi'])
                 ->escapeColumns()
                 ->toJson();
         }
@@ -354,6 +377,10 @@ class DataTableController extends Controller
            
             return DataTables::of($datas)
                 ->addIndexColumn()
+                ->addColumn('hari',function($row){
+                    $hari = (isset($row->jadwal->hari->nama_hari))?$row->jadwal->hari->nama_hari:'';
+                    return $hari;
+                })
                 ->addColumn('jam',function($row){
                     $jam = $row->jadwal->jam_mulai.' - '.$row->jadwal->jam_selesai;
                     return $jam;
@@ -371,17 +398,61 @@ class DataTableController extends Controller
                     return $kelas;
                 })
                 ->addColumn('dosen',function($row){
-                    $nama       = (isset($row->jadwal->dosen->nama))?$row->jadwal->dosen->nama:'';
-                    $depan      = (isset($row->jadwal->dosen->gelar_depan))?$row->jadwal->dosen->gelar_depan:'';
-                    $belakang   = (isset($row->jadwal->dosen->gelar_belakang))?$row->jadwal->dosen->gelar_belakang:'';
+                    $nama       = (isset($row->jadwal->dosens->nama))?$row->jadwal->dosens->nama:'';
+                    $depan      = (isset($row->jadwal->dosens->gelar_depan))?$row->jadwal->dosens->gelar_depan:'';
+                    $belakang   = (isset($row->jadwal->dosens->gelar_belakang))?$row->jadwal->dosens->gelar_belakang:'';
                     $dosen      = $depan.$nama.$belakang;
                     return $dosen;
                 })
                 ->addColumn('action', function($row){
-                    $btn = '<button type="button" class="tambah-matakuliah btn btn-sm btn-default" > <i class="fas fa-edit"></i> Edit</button>';
+                    $ids = \Crypt::encrypt($row->id);
+                    $btn = '<button type="button" class="hapus btn btn-sm btn-danger" data-id="'.$ids.'"> <i class="fas fa-trash"></i> Hapus</button>';
                     return $btn;
                 })
                 ->rawColumns(['action'])
+                ->escapeColumns()
+                ->toJson();
+        }
+    }
+
+
+     /**
+     * Datatable admin
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function admin(Request $request)
+    {
+        if ($request->ajax()) {
+            $datas = Admin::all();
+           
+            return DataTables::of($datas)
+                ->addIndexColumn()
+                ->addColumn('gambar', function($row){
+                    $url = config('services.image.baseUrl').config('services.image.path').'/'.$row->foto;
+                    if(isset($row->foto)){
+                        $img = '<img style="max-height:70px;max-width:120px;" src="'.$url.'"></img>';
+                    }else{
+                        $img = '<img style="max-height:70px;max-width:120px;" src="'.url('assets/img/icons/precence_app/add-product.png').'"></img>';
+                    }
+                    
+                    return $img;
+                })
+                ->addColumn('status',function($row){
+                    if($row->status == 0){
+                        $status = '<span class="badge badge-danger">Non Aktif</span>';
+                    }elseif($row->status == 1){
+                        $status = '<span class="badge badge-success">Aktif</span>';
+                    }
+                    return $status;
+                })
+                ->addColumn('action', function($row){
+                    $ids = \Crypt::encrypt($row->nik);
+                    $btn = '<button type="button" class="edit btn btn-sm btn-default" data-id="'.$ids.'" data-nik="'.$row->nik.'" data-nip="'.$row->nip.'" data-nama="'.$row->nama.'" data-foto="'.$row->foto.'" data-email="'.$row->email.'" data-status="'.$row->status.'" data-url="'.config('services.image.baseUrl').config('services.image.path').'/'.$row->foto.'"> <i class="fas fa-edit"></i> Edit</button>
+                            <button type="button" class="hapus btn btn-sm btn-danger" data-id="'.$ids.'"> <i class="fas fa-trash"></i> Hapus</button>';
+                    return $btn;
+                })
+                ->rawColumns(['action','gambar','status'])
                 ->escapeColumns()
                 ->toJson();
         }

@@ -23,7 +23,9 @@ class CreateJadwalsTable extends Migration
             $table->integer('kelas_id');
             $table->string('dosen',25);
             $table->timestamps();
-
+            $table->time('jam_presensi_dibuka')->nullable();
+            $table->time('jam_presensi_ditutup')->nullable();
+            $table->time('toleransi')->nullable();
            /* //relasi ke tabel hari
             $table->foreign('hari_id')
                 ->references('id')

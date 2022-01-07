@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Helpers\ResponseFormatter;
 
-class RuanganUpdateRequest extends FormRequest
+class AdminStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,14 +26,15 @@ class RuanganUpdateRequest extends FormRequest
      */
     public function rules()
     {
-        $ids = \Crypt::decrypt($this->id);
         return [
-            'kode_ruang'                => 'required|max:10|unique:ruangans,kode_ruang,'.$ids.',kode_ruang',
-            'nama_ruang'                => 'required|max:25',
-            'kapasitas_ruang_kuliah'    => 'required|numeric',
-            'kapasitas_ruang_ujian'     => 'required|numeric',
-            'kode_prodi'                => 'required|max:10',
-            'nama_gedung'               => 'required|max:25'
+            'nik'                => 'required|unique:dosens,nik|numeric|digits:16',
+            'nip'                => 'required|min:3|max:25',
+            'nama'               => 'required|max:50',
+            'foto'               => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'oldfoto'            => 'nullable|string',
+            'email'              => 'required|email|unique:dosens,email',
+            'password'           => 'required|min:6', 
+            'status'             => 'required'  
         ];
     }
 

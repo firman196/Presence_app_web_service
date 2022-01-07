@@ -31,6 +31,6 @@ class CreateRuangansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ruangan');
+        Schema::dropIfExists('ruangans');
     }
 }
