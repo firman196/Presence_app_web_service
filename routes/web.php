@@ -15,6 +15,7 @@ use App\Http\Controllers\Backend\JenisIzinController;
 use App\Http\Controllers\Backend\DataTableController;
 use App\Http\Controllers\Backend\KrsController;
 use App\Http\Controllers\Backend\PresensiController;
+use App\Http\Controllers\Backend\BeritaAcaraController;
 
 
 
@@ -80,6 +81,7 @@ Route::group(['middleware' => ['auth:admin'] ], function() {
         Route::get('/beacon/{id}',[DataTableController::class, 'beacon'])->name('data.beacon');
         Route::get('/krs',[DataTableController::class, 'krs'])->name('data.krs');
         Route::get('/admin',[DataTableController::class, 'admin'])->name('data.admin');
+        Route::get('/presensi',[DataTableController::class, 'presensi'])->name('data.presensi');
     });
     
     Route::prefix('prodi')->group(function () {
@@ -123,9 +125,12 @@ Route::group(['middleware' => ['auth:admin'] ], function() {
        
     });
 
-
+    //presensi
     Route::resource('presensi', PresensiController::class);
+    Route::put('generate/presensi/{id}', [PresensiController::class,'generate']);
 
+    //berita acara
+    Route::resource('beritaacara', BeritaAcaraController::class);
 });
 
 

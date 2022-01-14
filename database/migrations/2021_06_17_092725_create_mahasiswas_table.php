@@ -25,6 +25,7 @@ class CreateMahasiswasTable extends Migration
             $table->integer('semester')->default('0');
             $table->enum('status',[0,1])->default(0)->comment('0 : Nonaktif, 1 : Aktif');
             $table->string('telp',20)->nullable();
+            $table->integer('persen_hadir')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

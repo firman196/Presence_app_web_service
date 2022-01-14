@@ -15,21 +15,22 @@ class MahasiswaResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'nim'       => $this->nim,
-            'nama'      => $this->nama,
-            'prodi'     => $this->whenLoaded('prodi',function(){
+            'nim'           => $this->nim,
+            'nama'          => $this->nama,
+            'prodi'         => $this->whenLoaded('prodi',function(){
                 return $this->prodi->nama_prodi;
             }),   
-            'kelas'     => $this->whenLoaded('kelas',function(){
+            'kelas'         => $this->whenLoaded('kelas',function(){
                 return $this->kelas->nama_kelas;
             }),  
-            'dosen'     => $this->whenLoaded('dosens',function(){
+            'dosen'         => $this->whenLoaded('dosens',function(){
                 return $this->dosens->nama;
             }),  
-            'foto'      => config('services.image.baseUrl').config('services.image.path').'/'.$this->foto,
-            'email'     => $this->email,
-            'semester'  => $this->semester,
-            'telp'      => $this->telp 
+            'foto'          => config('services.image.baseUrl').config('services.image.path').'/'.$this->foto,
+            'email'         => $this->email,
+            'semester'      => $this->semester,
+            'telp'          => $this->telp,
+            'persen_hadir'  => $this->persen_hadir
         ];
     }
 }

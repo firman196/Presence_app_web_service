@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Models\Jadwal;
 use App\Models\Krs;
 use App\Models\Hari;
+use App\Models\Presensi;
 use App\Helpers\ResponseFormatter;
 use App\Http\Requests\Api\GetJadwalRequest;
 use App\Http\Resources\Mobile\JadwalResource;
@@ -35,7 +36,9 @@ class JadwalController extends Controller
 
     public function getJadwal(Request $request){
         $nim     = auth()->user()->nim;
-        $jadwals = Krs::with(['jadwal','jadwal.matakuliah','jadwal.ruangan','jadwal.kelas','jadwal.dosens','jadwal.hari'])->where('nim',$nim);
+        $jadwals = Presensi::with(['rekapKehadiran'=>function($q) use($nim){
+            $q->where('nim',$nim);
+        },'jadwal','jadwal.matakuliah','jadwal.ruangan','jadwal.kelas','jadwal.dosens','jadwal.hari'])->where('status','aktif')->orderBy('pertemuan_ke','asc');
         return JadwalResource::collection($jadwals->paginate(10))->additional(['meta' => [
             'code'      =>200,
             'status'    =>'success',
@@ -66,6 +69,8 @@ class JadwalController extends Controller
         }
        
     }
+
+    
 
 
 

@@ -24,4 +24,14 @@ class Hari extends Model
     {
         return $this->hasMany('App\Models\Jadwal', 'hari_id', 'id');
     }
+
+    /**
+    *
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\hasMany
+    */
+    public function presensi()
+    {
+        return $this->hasMany('App\Models\Presensi', 'hari_id', 'id');
+    }
 }

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\V1\AuthController;
 use App\Http\Controllers\API\V1\JadwalController;
+use App\Http\Controllers\API\V1\HariController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,4 +26,8 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
    Route::get('jadwal',[JadwalController::class, 'getJadwal']);
    Route::get('jadwal/sekarang',[JadwalController::class, 'getJadwalSekarang']);
    Route::get('jadwal/{jadwal}',[JadwalController::class, 'getJadwalById']);
+
+
+   //hari
+   Route::get('hari',[HariController::class,'getHari']);
 });

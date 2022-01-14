@@ -69,66 +69,80 @@
           </div>
         </div>
 
-        <div class="accordion" id="accordionExample">
-          @foreach ($jadwal->presensi as $presensi)
-          <div class="card" >
-            <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapse{{ $presensi->pertemuan_ke }}" aria-expanded="true" aria-controls="collapseOne" data-id="{{ $presensi->id }}">
-              <div class="row">
-                <div class="col-md-10 col-xs-12">
-                  <h4 class="mb-0">
-                    Pertemuan Ke - {{ $presensi->pertemuan_ke }}
-                  </h4>
-                </div>
-               <div class="col-md-2 col-xs-12">
-               
-               </div>
-               
-              </div>
-            </div>
-            <div id="collapse{{ $presensi->pertemuan_ke }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-              <div class="card-body">
-                <div class="row">
-                  @if($presensi->status == 'aktif')
-                    <a href="#" id="nonaktifkan" class="ml-auto mb-4 nonaktifkan btn btn-icon btn-danger" data-id="{{ \Crypt::encrypt($presensi->id) }}">
-                      <span class="btn-inner--icon"><i class="fas fa-sync-alt"></i></span>
-                      <span class="btn-inner--text">Non Aktifkan</span>
-                    </a>
-                  @elseif(isset($presensi->tanggal_pertemuan))
-                    <a href="#" class="ml-auto mb-4  btn btn-icon btn-danger" data-id="{{ \Crypt::encrypt($presensi->id) }}" disabled>
-                      <span class="btn-inner--icon"><i class="fas fa-sync-alt"></i></span>
-                      <span class="btn-inner--text">Non Aktifkan</span>
-                    </a>
-                  @else
-                    <a href="#" id="generate-pertemuan" class="ml-auto mb-4 generate-pertemuan btn btn-icon btn-primary" data-id="{{ \Crypt::encrypt($presensi->id) }}" data-hari_id="{{ $presensi->hari_id}}" data-jam_presensi_dibuka="{{ $presensi->jam_presensi_dibuka}}" data-jam_presensi_ditutup="{{ $presensi->jam_presensi_ditutup }}" data-toleransi_keterlambatan="{{ $presensi->toleransi_keterlambatan }}">
-                      <span class="btn-inner--icon"><i class="fas fa-sync-alt"></i></span>
-                      <span class="btn-inner--text">Aktifkan</span>
-                    </a>
-                  @endif
-                </div>
-                <div class="table-responsive">
-                  <input type="hidden" id="presensi-id" value="{{ \Crypt::encrypt($presensi->id) }}">
-                  <table class="dataTable table table-flush" id="dataTable">
-                    <thead class="thead-light">
-                      <tr>
-                        <th>N0</th>
-                        <th>NIM</th>
-                        <th>NAMA MAHASISWA</th>
-                        <th>HADIR</th>
-                        <th>IZIN</th>
-                        <th>ALFA</th>
-                        <th>TANGGAL PRESENSI</th>
-                        <th>JAM PRESENSI</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                  </table>
-                 </div>
-              </div>
-            </div>
+
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header border-0">
+            <h3 class="mb-0">{{ $title }}</h3>
           </div>
-          @endforeach
+          <!-- Light table -->
+          <div class="table-responsive">
+            <table class="table table-bordered align-items-center text-center">
+              <thead class="thead-light">
+                <tr>
+                  <th rowspan="2">N0</th>
+                  <th rowspan="2">Hari/Tanggal</th>
+                  <th rowspan="2">Jam</th>
+                  <th rowspan="2">Pertemuan Ke</th>
+                  <th colspan="3">Jumlah Mahasiswa </th>
+                  <th rowspan="2">Materi kuliah yang diberikan</th>
+                  <th rowspan="2">Media kuliah yang digunakan</th>
+                  <th rowspan="2">Catatan</th>
+                  <th rowspan="2">Action</th>
+                </tr>
+                <tr>
+                  <th>Hadir</th>
+                  <th>Izin</th>
+                  <th>Alpha</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($beritaAcaras as $beritaAcara)
+                  <tr>
+                    <th>{{ $loop->iteration }}</th>
+                    @if(isset($beritaAcara->tanggal_pertemuan))
+                      <th>{{ $beritaAcara->hari->nama_hari}} / {{ $beritaAcara->tanggal_pertemuan }}</th>
+                      <th>{{ \App\Helpers\GeneralHelper::format_time_2digit($jadwal->jam_mulai).' - '. \App\Helpers\GeneralHelper::format_time_2digit($jadwal->jam_selesai) }} WIB</th>
+                      <th>{{ $beritaAcara->pertemuan_ke }}</th>
+                    @else
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                    @endif
+                  
+                    <th>{{ $beritaAcara->total_mahasiswa_hadir }}</th>
+                    <th>{{ $beritaAcara->total_mahasiswa_izin }}</th>
+                    <th>{{ $beritaAcara->total_mahasiswa_alpha }}</th>
+                    <th>{{ $beritaAcara->materi_perkuliahan }}</th>
+                    <th>{{ $beritaAcara->media_perkuliahan }}</th>
+                    <th>{{ $beritaAcara->catatan_perkuliahan }}</th>
+                    <th>
+                      @if(isset($beritaAcara->tanggal_pertemuan) && $beritaAcara->status == 'aktif')
+                      <button id="tambah" class="tambah btn btn-sm btn-icon btn-primary" type="button">
+                        <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                        <span class="btn-inner--text">Tambah</span>
+                      </button>
+                      @elseif(!isset($beritaAcara->tanggal_pertemuan) && $beritaAcara->status == 'aktif')
+                        @if(strtotime($beritaAcara->jam_presensi_dibuka)<= strtotime($time) && strtotime($time)<=strtotime('+'.$beritaAcara->toleransi_keterlambatan.' minutes', strtotime($beritaAcara->jam_presensi_di)))
+                          <button id="tambah" class="tambah btn btn-sm btn-icon btn-primary" type="button">
+                            <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                            <span class="btn-inner--text">Tambah</span>
+                          </button>
+                        @else
+                          <button id="tambah" class="tambah btn btn-sm btn-icon btn-primary" type="button" disabled>
+                            <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                            <span class="btn-inner--text">Tambah</span>
+                          </button>
+                        @endif
+                      @else
+                      @endif
+                    </th>
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+           </div>
+          <!-- Card footer -->
         </div>
       </div>
     </div>
@@ -153,9 +167,7 @@
                 <div class="col-md-6">
                   <label for="hari" class="form-control-label">Hari <span style="color: red">*</span></label>
                   <select name="hari_id" id="hari" class="form-control">
-                    @foreach ($haris as $hari)
-                    <option value="{{ $hari->id }}">{{ $hari->nama_hari }}</option> 
-                    @endforeach
+                   
                   </select>
                   <span><small class="text-danger tanggal-presensi-dibuka-error" id="tanggal-presensi-dibuka-error"></small></span>
                 </div>

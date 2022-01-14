@@ -22,10 +22,12 @@ class CreateJadwalsTable extends Migration
             $table->string('kode_ruang',10);
             $table->integer('kelas_id');
             $table->string('dosen',25);
+            $table->enum('status',['aktif','nonaktif'])->default('nonaktif');
             $table->timestamps();
-            $table->time('jam_presensi_dibuka')->nullable();
-            $table->time('jam_presensi_ditutup')->nullable();
-            $table->time('toleransi')->nullable();
+           /// $table->date('tanggal_presensi_dibuka')->nullable();
+        //  $table->time('jam_presensi_dibuka')->nullable();
+          //  $table->time('jam_presensi_ditutup')->nullable();
+         //   $table->integer('toleransi_keterlambatan')->nullable();
            /* //relasi ke tabel hari
             $table->foreign('hari_id')
                 ->references('id')

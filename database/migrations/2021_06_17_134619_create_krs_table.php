@@ -18,6 +18,7 @@ class CreateKrsTable extends Migration
             $table->string('kode_jadwal',10);
             $table->string('nim',15);
             $table->date('tanggal_krs');
+            $table->integer('persen_hadir')->default(0);
             $table->timestamps();
 
             //relasi ke tabel jadwal

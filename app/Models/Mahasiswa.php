@@ -83,4 +83,15 @@ class Mahasiswa  extends Authenticatable
     }
 
 
+    /**
+    * 
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\hasMany
+    */
+    public function rekapKehadiran()
+    {
+        return $this->hasMany('App\Models\RekapKehadiran', 'nim', 'nim');
+    }
+
+
 }

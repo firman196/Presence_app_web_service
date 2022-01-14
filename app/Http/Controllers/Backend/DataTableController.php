@@ -14,6 +14,8 @@ use App\Models\Mahasiswa;
 use App\Models\Ruangan;
 use App\Models\Krs;
 use App\Models\Admin;
+use App\Models\presensi;
+use App\Models\RekapKehadiran;
 
 class DataTableController extends Controller
 {
@@ -75,6 +77,7 @@ class DataTableController extends Controller
                     $btn = '<a href="/krs/'.$ids.'" class="hapus btn btn-sm btn-success"> <i class="fas fa-eye"></i> Tambah Krs</a>';
                     return $btn;
                 })
+               
                 ->rawColumns(['action','action2','gambar'])
                 ->escapeColumns()
                 ->toJson(); 
@@ -281,7 +284,7 @@ class DataTableController extends Controller
             return DataTables::of($datas)
                 ->addIndexColumn()
                 ->addColumn('jam',function($row){
-                    $jam = $row->jam_mulai.' - '.$row->jam_selesai;
+                    $jam = \App\Helpers\GeneralHelper::format_time_2digit($row->jam_mulai).' - '.\App\Helpers\GeneralHelper::format_time_2digit($row->jam_selesai).' WIB';
                     return $jam;
                 })
                 ->addColumn('matakuliah',function($row){
@@ -311,14 +314,19 @@ class DataTableController extends Controller
                     $dosen      = $depan.$nama.$belakang;
                     return $dosen;
                 })
-                ->addColumn('jam_presensi',function($row){
-                    $jam_presensi   = (isset($row->jam_presensi_dibuka))?$row->presensi->jam_presensi_dibuka:'<span class="badge badge-pill badge-warning">Belum Disetting</span>';
-                    return $jam_presensi;
+               
+              /*->addColumn('jam_presensi_dibuka',function($row){
+                    $jam_presensi_dibuka   = (isset($row->jam_presensi_dibuka))?\App\Helpers\GeneralHelper::format_time_2digit($row->jam_presensi_dibuka).' WIB':'<span class="badge badge-pill badge-warning">Belum Disetting</span>';
+                    return $jam_presensi_dibuka;
+                })
+                ->addColumn('jam_presensi_ditutup',function($row){
+                    $jam_presensi_ditutup   = (isset($row->jam_presensi_ditutup))?\App\Helpers\GeneralHelper::format_time_2digit($row->jam_presensi_ditutup).' WIB':'<span class="badge badge-pill badge-warning">Belum Disetting</span>';
+                    return $jam_presensi_ditutup;
                 })
                 ->addColumn('toleransi',function($row){
                     $toleransi   = (isset($row->toleransi))?$row->toleransi:'<span class="badge badge-pill badge-warning">Belum Disetting</span>';
                     return $toleransi;
-                })
+                })*/
                 ->addColumn('action', function($row){
                     $ids = \Crypt::encrypt($row->kode_jadwal);
                     $btn = '<button type="button" class="edit btn btn-sm btn-default" data-id="'.$ids.'" data-kode_jadwal="'.$row->kode_jadwal.'" data-kode_matakuliah="'.$row->kode_matakuliah.'" data-hari_id="'.$row->hari_id.'" data-jam_mulai="'.$row->jam_mulai.'" data-jam_selesai="'.$row->jam_selesai.'" data-kode_ruang="'.$row->kode_ruang.'" data-kelas_id="'.$row->kelas_id.'" data-dosen="'.$row->dosen.'"> <i class="fas fa-edit"></i> Edit</button>
@@ -327,11 +335,30 @@ class DataTableController extends Controller
                 })
                 ->addColumn('action2', function($row){
                     $ids = \Crypt::encrypt($row->kode_jadwal);
-                    $btn = '<button type="button" class="edit btn btn-sm btn-default" data-id="'.$ids.'" data-kode_jadwal="'.$row->kode_jadwal.'" data-kode_matakuliah="'.$row->kode_matakuliah.'" data-hari_id="'.$row->hari_id.'" data-jam_mulai="'.$row->jam_mulai.'" data-jam_selesai="'.$row->jam_selesai.'" data-kode_ruang="'.$row->kode_ruang.'" data-kelas_id="'.$row->kelas_id.'" data-dosen="'.$row->dosen.'"> <i class="ni ni-settings"></i> Setting </button>
-                            <a href="presensi/'.$ids.'" class="btn btn-sm btn-success"> <i class="fas fa-eye"></i> Lihat Presensi</a>';
+                    if($row->status == 'nonaktif'){
+                        $btn = ' <button id="generate-pertemuan" class="generate-pertemuan btn btn-sm btn-icon btn-primary" data-id="'.$ids.'" data-kode_jadwal="'.$row->kode_jadwal.'" data-hari_id="'.$row->hari_id.'" data-jam_mulai="'.$row->jam_mulai.'" type="button">
+                                    <span class="btn-inner--icon"><i class="fas fa-sync-alt"></i></span>
+                                    <span class="btn-inner--text">Generate pertemuan</span>
+                                </button>';
+                           /*     <button type="button" class="edit btn btn-sm btn-default" data-id="'.$ids.'" data-kode_jadwal="'.$row->kode_jadwal.'" data-kode_matakuliah="'.$row->kode_matakuliah.'" data-matakuliah="'.$row->matakuliah->nama_matakuliah.'" data-hari="'.$row->hari->nama_hari.'" data-jam_mulai="'. \App\Helpers\GeneralHelper::format_time_2digit($row->jam_mulai).'" data-jam_selesai="'.\App\Helpers\GeneralHelper::format_time_2digit($row->jam_selesai).'" data-ruangan="'.$row->ruangan->nama_ruang.'" data-kelas="'.$row->kelas->nama_kelas.'" data-dosen="'.$row->dosens->nama.'"> <i class="ni ni-settings"></i> Setting </button>
+                                <a href="presensi/'.$ids.'" class="btn btn-sm btn-success"> <i class="fas fa-eye"></i> Lihat Presensi</a>*/
+                    }else{
+                        $btn = '<a href="presensi/'.$ids.'" class="btn btn-sm btn-success"> <i class="fas fa-eye"></i> Lihat Presensi</a>';
+                    }
+                   
                     return $btn;
                 })
-                ->rawColumns(['action','action2','jam_presensi','toleransi'])
+                ->addColumn('action3', function($row){
+                    $ids = \Crypt::encrypt($row->kode_jadwal);
+                    if($row->status == 'nonaktif'){
+                        $btn = '<a href="#" class="btn btn-sm btn-success" disabled> <i class="fas fa-eye"></i> Lihat Berita Acara</a>';
+                    }else{
+                        $btn = '<a href="beritaacara/'.$ids.'" class="btn btn-sm btn-success"> <i class="fas fa-eye"></i> Lihat Berita Acara</a>';
+                    }
+                   
+                    return $btn;
+                })
+                ->rawColumns(['action','action2','action3'])
                 ->escapeColumns()
                 ->toJson();
         }
@@ -457,6 +484,70 @@ class DataTableController extends Controller
                 ->toJson();
         }
     }
+
+
+
+     /**
+     * Datatable Presesnsi by kode jadwal
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function presensi(Request $request)
+    {
+        if ($request->ajax()) {
+            $ids   = \Crypt::decrypt($request->presensi_id);
+            $datas = RekapKehadiran::with(['mahasiswa'])->where('presensi_id',$ids)->get();
+           
+            return DataTables::of($datas)
+                ->addIndexColumn()
+                ->addColumn('nim',function($row){
+                    $nim = (isset($row->mahasiswa->nim))?$row->mahasiswa->nim:'';
+                    return $nim;
+                })
+                ->addColumn('nama',function($row){
+                    $nama = (isset($row->mahasiswa->nama))?$row->mahasiswa->nama:'';
+                    return $nama;
+                })
+                ->addColumn('hadir',function($row){
+                    $hadir = $row->kode_status_presensi=='H'?'V':'-';
+                    return $hadir;
+                })
+                ->addColumn('izin',function($row){
+                    $izin = $row->kode_status_presensi=='I'?'V':'-';
+                    return $izin;
+                })
+                ->addColumn('alfa',function($row){
+                    $alfa = $row->kode_status_presensi=='A'?'V':'-';
+                    return $alfa;
+                })
+                ->addColumn('tanggal_presensi',function($row){
+                    if(isset($row->tanggal_presensi)){
+                        $tanggal_presensi = \App\Helpers\GeneralHelper::tgl_indo(date('Y-m-d',strtotime($row->tanggal_presensi)));
+                    }else{
+                        $tanggal_presensi = '-';
+                    }
+                   
+                    return $tanggal_presensi;
+                })
+                ->addColumn('jam_presensi',function($row){
+                    if(isset($row->jam_presensi)){
+                        $jam_presensi = \App\Helpers\GeneralHelper::format_time_2digit($row->jam_presensi);
+                    }else{
+                        $jam_presensi = '-';
+                    }
+                    return $jam_presensi;
+                })
+                ->addColumn('action', function($row){
+                    $ids = \Crypt::encrypt($row->id);
+                    $btn = '<button type="button" class="hapus btn btn-sm btn-danger" data-id="'.$ids.'"> <i class="fas fa-trash"></i> Hapus</button>';
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->escapeColumns()
+                ->toJson();
+        }
+    }
+
 
 
 }

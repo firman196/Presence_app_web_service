@@ -325,7 +325,10 @@
                                         data: 'ruang',
                                         "className": "text-center"                                        
                                     },   
-                                  
+                                    {
+                                        data: 'dosen',
+                                        "className": "text-center"                                        
+                                    }, 
                                                                     
                                     {
                                         data: 'action',

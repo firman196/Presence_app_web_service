@@ -127,6 +127,12 @@
                 <span class="nav-link-text">Data Presensi</span>
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link {{ Route::is('beritaacara.index') ? 'active' : '' }}" href="{{ route('beritaacara.index') }}">
+                <i class="ni ni-button-power text-red"></i>
+                <span class="nav-link-text">Berita Acara</span>
+              </a>
+            </li>
            
           </ul>
 
