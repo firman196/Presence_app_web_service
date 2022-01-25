@@ -102,11 +102,21 @@ class Jadwal extends Model
     /**
     * 
     *
-    * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+    * @return \Illuminate\Database\Eloquent\Relations\hasMany
     */
     public function presensi()
     {
         return $this->hasMany('App\Models\Presensi', 'kode_jadwal', 'kode_jadwal');
+    }
+
+     /**
+    * 
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\hasMany
+    */
+    public function rekapKehadiran()
+    {
+        return $this->hasMany('App\Models\RekapKehadiran', 'kode_jadwal', 'kode_jadwal');
     }
 
 

@@ -11,10 +11,12 @@ class Beacon extends Model
 
     protected $table = 'beacons';
     protected $fillable = [
+        'kode_beacon',
         'kode_ruang',
-        'nama',
         'uuid',
-        'jarak_max',
+        'major',
+        'minor',
+        'jarak_maksimal',
         'keterangan',
         'status'
     ];

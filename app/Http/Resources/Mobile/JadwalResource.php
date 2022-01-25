@@ -68,8 +68,6 @@ class JadwalResource extends JsonResource
                     $this->jadwal->relationLoaded('dosens'), 
                     fn () => $this->jadwal->dosens->gelar_depan.$this->jadwal->dosens->nama.$this->jadwal->dosens->gelar_belakang
                 );
-            
-               // return $this->jadwal->dosens->gelar_depan.$this->jadwal->dosens->nama.$this->dosens->gelar_belakang;
             }),
             'foto_dosen'        =>  $this->whenLoaded('jadwal',function(){
                 return $this->when(
@@ -77,8 +75,13 @@ class JadwalResource extends JsonResource
                     fn () => config('services.image.baseUrl').config('services.image.path').'/'.$this->jadwal->dosens->foto
                 );
             }),
-
-           
+            'pertemuan_ke'=> $this->whenLoaded('presensi',function(){
+                return $this->presensi->pertemuan_ke;
+            }),
+            'status_kelas' => $this->whenLoaded('presensi',function(){
+                return (\App\Helpers\GeneralHelper::check_jam_presensi($this->presensi->jam_presensi_dibuka,$this->presensi->jam_presensi_ditutup,$this->presensi->toleransi_keterlambatan))?'Opened':'Closed';
+            }),
+            'status_presensi'=>($this->status)?$this->status:null
         ];
 /*
         'kode_matakuliah'   => $this->whenLoaded('matakuliah',function(){

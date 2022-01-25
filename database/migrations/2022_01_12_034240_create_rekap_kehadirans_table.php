@@ -19,6 +19,7 @@ class CreateRekapKehadiransTable extends Migration
             $table->string('kode_status_presensi',5)->nullable();
             $table->time('jam_presensi')->nullable();
             $table->date('tanggal_presensi')->nullable();
+            $table->string('kode_jadwal',10);
             $table->string('nim',15);
             $table->enum('status',['default','success','expired']);
            // $table->string('imei',255)->nullable();

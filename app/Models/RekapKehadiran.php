@@ -13,7 +13,8 @@ class RekapKehadiran extends Model
         'kode_status_presensi',
         'jam_presensi',
         'tanggal_presensi',
-        'nim'
+        'nim',
+        'kode_jadwal'
     ];
 
     /**
@@ -34,6 +35,17 @@ class RekapKehadiran extends Model
     public function mahasiswa()
     {
         return $this->belongsTo('App\Models\Mahasiswa', 'nim', 'nim');
+    }
+
+
+    /**
+    * 
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+    */
+    public function jadwal()
+    {
+        return $this->belongsTo('App\Models\Jadwal', 'kode_jadwal', 'kode_jadwal');
     }
 
 

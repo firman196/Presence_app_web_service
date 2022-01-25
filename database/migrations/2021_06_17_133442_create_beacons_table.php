@@ -19,6 +19,7 @@ class CreateBeaconsTable extends Migration
             $table->string('uuid',255);
             $table->integer('major');
             $table->integer('minor');
+            $table->integer('jarak_maksimal');
             $table->timestamps();
 
             //relasi ke tabel ruangan

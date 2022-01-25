@@ -123,7 +123,7 @@
                         <span class="btn-inner--text">Tambah</span>
                       </button>
                       @elseif(!isset($beritaAcara->tanggal_pertemuan) && $beritaAcara->status == 'aktif')
-                        @if(strtotime($beritaAcara->jam_presensi_dibuka)<= strtotime($time) && strtotime($time)<=strtotime('+'.$beritaAcara->toleransi_keterlambatan.' minutes', strtotime($beritaAcara->jam_presensi_di)))
+                        @if(strtotime($beritaAcara->jam_presensi_dibuka)<= strtotime($time) && strtotime($time)<=strtotime('+'.$beritaAcara->toleransi_keterlambatan.' minutes', strtotime($beritaAcara->jam_presensi_ditutup)))
                           <button id="tambah" class="tambah btn btn-sm btn-icon btn-primary" type="button">
                             <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
                             <span class="btn-inner--text">Tambah</span>
