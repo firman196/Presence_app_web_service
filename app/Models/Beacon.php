@@ -16,9 +16,7 @@ class Beacon extends Model
         'uuid',
         'major',
         'minor',
-        'jarak_maksimal',
-        'keterangan',
-        'status'
+        'jarak_maksimal'
     ];
 
       /**

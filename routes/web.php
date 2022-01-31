@@ -36,7 +36,7 @@ use App\Http\Controllers\Backend\BeritaAcaraController;
 
 
 Auth::routes();
-Route::group(['middleware' => ['auth:admin'] ], function() {
+Route::group(['middleware' => ['presensiAkses:admin'] ], function() {
     //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     
     Route::get('/', function () {
@@ -82,6 +82,7 @@ Route::group(['middleware' => ['auth:admin'] ], function() {
         Route::get('/krs',[DataTableController::class, 'krs'])->name('data.krs');
         Route::get('/admin',[DataTableController::class, 'admin'])->name('data.admin');
         Route::get('/presensi',[DataTableController::class, 'presensi'])->name('data.presensi');
+        Route::get('/rekap-kehadiran',[DataTableController::class, 'rekapKehadiran'])->name('data.rekap-kehadiran');
     });
     
     Route::prefix('prodi')->group(function () {
@@ -108,14 +109,7 @@ Route::group(['middleware' => ['auth:admin'] ], function() {
         Route::get('/datatable',[DataTableController::class, 'matakuliah'])->name('matakuliah.datatable');
     });
     
-    Route::prefix('jadwal')->group(function () {
-        Route::get('/',[JadwalController::class, 'index'])->name('jadwal.index');
-        Route::post('/store',[JadwalController::class, 'store'])->name('jadwal.store');
-        Route::put('/update/{id}',[JadwalController::class, 'update'])->name('jadwal.update');
-        Route::delete('/delete/{id}',[JadwalController::class, 'destroy'])->name('jadwal.delete');
-        
-    });
-     
+   
     Route::prefix('beacon')->group(function () {
         Route::get('/',[BeaconController::class, 'index'])->name('beacon.index');
         Route::get('/show/{id}',[BeaconController::class, 'show'])->name('beacon.show');
@@ -125,13 +119,24 @@ Route::group(['middleware' => ['auth:admin'] ], function() {
        
     });
 
-    //presensi
-    Route::resource('presensi', PresensiController::class);
-    Route::put('generate/presensi/{id}', [PresensiController::class,'generate']);
 
-    //berita acara
-    Route::resource('beritaacara', BeritaAcaraController::class);
 });
 
 
+Route::prefix('jadwal')->group(function () {
+    Route::get('/',[JadwalController::class, 'index'])->name('jadwal.index');
+    Route::post('/store',[JadwalController::class, 'store'])->name('jadwal.store');
+    Route::put('/update/{id}',[JadwalController::class, 'update'])->name('jadwal.update');
+    Route::delete('/delete/{id}',[JadwalController::class, 'destroy'])->name('jadwal.delete');
+    
+});
+
+Route::group(['middleware' => ['presensiAkses:dosen','auth:admin'] ], function() {   
+    //presensi
+    Route::resource('presensi', PresensiController::class);
+    Route::put('generate/presensi/{id}', [PresensiController::class,'generate']);
+    
+    //berita acara
+    Route::resource('beritaacara', BeritaAcaraController::class);
+});
 

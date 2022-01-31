@@ -7,6 +7,7 @@ use App\Http\Controllers\API\V1\AuthController;
 use App\Http\Controllers\API\V1\BeaconsController;
 use App\Http\Controllers\API\V1\JadwalController;
 use App\Http\Controllers\API\V1\HariController;
+use App\Http\Controllers\API\V1\PresensiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +25,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::post('login', [AuthController::class, 'login']);
 Route::group(['middleware' => 'auth:sanctum'], function(){
-   Route::get('jadwal',[JadwalController::class, 'getJadwalByHari']);
+   Route::get('jadwal',[JadwalController::class, 'getJadwal']);
    Route::get('jadwal/sekarang',[JadwalController::class, 'getJadwalSekarang']);
    Route::get('jadwal/history',[JadwalController::class, 'getHistoryJadwal']);
    Route::get('jadwal/{jadwal}',[JadwalController::class, 'getJadwalById']);
@@ -35,4 +36,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 
    //beacons
    Route::get('beacons/{id}',[BeaconsController::class,'getBeaconsByKodeRuang']);
+
+   //post presensi
+   Route::post('presensi',[PresensiController::class,'postPresensi']);
 });

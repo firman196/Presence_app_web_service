@@ -133,6 +133,13 @@
                     <span><small class="text-danger minor-error" id="minor-error"></small></span>
                   </div>
                 </div>
+                <div class="form-group row">
+                  <div class="col-md-6">
+                    <label for="jarak_maksimal" class="form-control-label">Jarak Maksimal <span style="color: red">*</span></label>
+                    <input id="jarak_maksimal" name="jarak_maksimal" type="number" placeholder="masukkan jarak maksimal beacon" class="form-control">
+                    <span><small class="text-danger jarak-maksimal-error" id="jarak-maksimal-error"></small></span>
+                  </div>
+                </div>
                                                
                 <div class="text-right">
                     <a href="#"id="submit-data" class="submit-data btn btn-primary">Simpan</a>
@@ -141,6 +148,7 @@
           </div>
         </div>
       </div>
+    </div>
     <!-- Modal -->
     @endsection
 
@@ -204,11 +212,13 @@
                           var uuid                    = $(this).data('uuid');
                           var major                   = $(this).data('major');
                           var minor                   = $(this).data('minor');
+                          var jarak_maksimal          = $(this).data('jarak_maksimal');
                      
                           $('#kode_beacon').val(kode_beacon);
                           $('#uuid').val(uuid);
                           $('#major').val(major);
                           $('#minor').val(minor);
+                          $('#jarak_maksimal').val(jarak_maksimal);
                                       
                           $('#submit-data').on('click',function(e){
                             reset_error()
@@ -329,6 +339,7 @@
                         $( '#uuid-error' ).html('');
                         $( '#major-error' ).html('');
                         $( '#minor-error' ).html('');
+                        $( '#jarak-maksimal-error' ).html('');
                      
                     }
 
@@ -337,6 +348,7 @@
                         $('#uuid').val('');
                         $('#major').val('');
                         $('#minor').val('');
+                        $('#jarak_maksimal').val('');
 
                       }
                      
@@ -354,6 +366,10 @@
                         }
                         if(datas.minor){
                             $( '#minor-error' ).html( datas.minor[0] );
+                        }
+
+                        if(datas.jarak_maksimal){
+                            $( '#jarak-maksimal-error' ).html( datas.jarak_maksimal[0] );
                         }
                        
                                     

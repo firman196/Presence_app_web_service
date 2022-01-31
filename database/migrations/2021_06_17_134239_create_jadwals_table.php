@@ -22,6 +22,7 @@ class CreateJadwalsTable extends Migration
             $table->string('kode_ruang',10);
             $table->integer('kelas_id');
             $table->string('dosen',25);
+            $table->integer('pertemuan_ke')->default(1);
             $table->enum('status',['aktif','nonaktif'])->default('nonaktif');
             $table->timestamps();
            /// $table->date('tanggal_presensi_dibuka')->nullable();

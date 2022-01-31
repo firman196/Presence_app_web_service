@@ -28,11 +28,12 @@ class BeaconUpdateRequest extends FormRequest
     {
         $ids = \Crypt::decrypt($this->id);
         return [
-            'kode_beacon' => 'required|unique:beacons,kode_beacon,'.$ids.',kode_beacon|string|max:10',
-            'kode_ruang'  => 'required|string|max:10',
-            'uuid'        => 'required',
-            'major'       => 'required|numeric',
-            'minor'       => 'required|numeric'
+            'kode_beacon'   => 'required|unique:beacons,kode_beacon,'.$ids.',kode_beacon|string|max:10',
+            'kode_ruang'    => 'required|string|max:10',
+            'uuid'          => 'required',
+            'major'         => 'required|numeric',
+            'minor'         => 'required|numeric',
+            'jarak_maksimal'=> 'required|numeric'
         ];
     }
 

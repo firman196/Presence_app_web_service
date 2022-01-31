@@ -22,10 +22,8 @@ class JadwalController extends Controller
         $hari       = Hari::where('nama_hari',$hari_ini)->first();
 
        // $presensi   = 
-        $jadwals    = RekapKehadiran::with(['jadwal','jadwal.matakuliah','jadwal.ruangan','jadwal.kelas','jadwal.dosens','jadwal.hari','presensi'])->where('nim',$nim)->whereHas('presensi',function($q){
-            $q->where('status','aktif');
-        })->whereHas('jadwal',function($q) use ($hari){
-            $q->where('hari_id',$hari->id??'');
+        $jadwals    = RekapKehadiran::with(['jadwal','jadwal.matakuliah','jadwal.ruangan','jadwal.kelas','jadwal.dosens','jadwal.hari','presensi'])->where('nim',$nim)->whereHas('presensi',function($q) use ($hari){
+            $q->where('status','aktif')->where('hari_id',$hari->id??'');;
         });
 
         return JadwalResource::collection($jadwals->paginate(10))->additional(['meta' => [
@@ -35,11 +33,11 @@ class JadwalController extends Controller
         ]]);
     }
 
-    public function getJadwalByHari(Request $request){
+    public function getJadwal(Request $request){
         $nim     = auth()->user()->nim;
         $hari_id = $request->hari_id;
-        $jadwals = Krs::with(['jadwal','jadwal.matakuliah','jadwal.ruangan','jadwal.kelas','jadwal.dosens','jadwal.hari'])->where('nim',$nim)->whereHas('jadwal',function($q) use ($hari_id){
-            $q->where('hari_id',$hari_id??'');
+        $jadwals = Krs::with(['jadwal','jadwal.matakuliah','jadwal.ruangan','jadwal.kelas','jadwal.dosens','jadwal.hari',])->where('nim',$nim)->whereHas('jadwal',function($q) use ($hari_id){
+            $q->orderBy('jam_mulai','asc');
         });
        /* $jadwals = Presensi::with(['rekapKehadiran'=>function($q) use($nim){
             $q->where('nim',$nim);

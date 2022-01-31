@@ -94,22 +94,27 @@ class PresensiController extends Controller
         try{
             $ids                    = \Crypt::decrypt($id);
             $validated              = $request->validated();
-            $validated['status']    = 'aktif';
-            //update status presensi
-            Presensi::where('id',$ids)->update($validated);
+           // $validated['status']    = 'aktif';
+           
           
             //generate data krs mahasiswa ke tabel rekap kehadiran
-            $data_krs = Krs::where('kode_jadwal',$request->kode_jadwal)->get();
+           /* $data_krs = Krs::where('kode_jadwal',$request->kode_jadwal)->get();
             $data = array();
             foreach($data_krs as $krs){
                 $datas    = [
                     'presensi_id'           => $ids,
-                    'nim'                   => $krs->nim
+                    'nim'                   => $krs->nim,
+                    'kode_status_presensi'  => 'A'
                 ];
                 $data[] = $datas;
-            }
+            }*/
  
-            RekapKehadiran::insert($data);
+           // $validated['total_mahasiswa_alpha'] = $data_krs->count();
+            //update status presensi
+            Presensi::where('id',$ids)->update($validated);
+
+            //generate rekap kehadiran
+           // RekapKehadiran::insert($data);
             return ResponseFormatter::success(
                 'updated data successfully',
                 200
@@ -170,9 +175,7 @@ class PresensiController extends Controller
             $jam_ditutup    = date('H:i:s', strtotime('+15 minutes', strtotime($jam_mulai)));
 
             //generate 14 pertemuan
-            
             for ($i = 1 ;$i<=14;$i++){
-           
                 $data[] = [
                     'kode_jadwal'               => $kode_jadwal,
                     'pertemuan_ke'              => $i,
@@ -183,9 +186,33 @@ class PresensiController extends Controller
                 ];
                
             }
-           
+            //insert pertemuan
             Presensi::insert($data);
+            //merubah flag status di jadwal
             Jadwal::where('kode_jadwal',$kode_jadwal)->update(['status'=>'aktif']);
+            
+            //mengaktifkan presensi pertemuan 1
+            $presensiSekarang       = Presensi::where('pertemuan_ke',1)->where('kode_jadwal',$kode_jadwal)->first();
+            //generate data krs
+            $data_krs               = Krs::where('kode_jadwal',$presensiSekarang->kode_jadwal)->get();
+            $data                   = array();
+            foreach($data_krs as $krs){
+                $datas    = [
+                    'presensi_id'           => $presensiSekarang->id,
+                    'kode_jadwal'           => $presensiSekarang->kode_jadwal,
+                    'nim'                   => $krs->nim,
+                    'kode_status_presensi'  => 'A'
+                ];
+                $data[] = $datas;
+            }
+            ///mengaktifkan presensi pertemuan 1
+            $presensiSekarang->status                = 'aktif';
+            //semua mahasiswa dianggap alpha secara default
+            $presensiSekarang->total_mahasiswa_alpha = $data_krs->count();
+            $presensiSekarang->save();
+            //membuat rekap kehadiran untuk presensi untuk pertemuan 1
+            RekapKehadiran::insert($data);
+
             return ResponseFormatter::success(
                 'updated data successfully',
                 200

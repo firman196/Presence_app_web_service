@@ -28,6 +28,7 @@
                 <span class="nav-link-text">Dashboard</span>
               </a>
             </li>
+            @if(Auth::guard('admin')->check())
             <li class="nav-item">
               <a class="nav-link {{ Route::is('mahasiswa.index') || Route::is('dosen.index') ? 'active' : '' }}" href="#navbar-dashboards" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-dashboards">
                 <i class="ni ni-archive-2 text-green"></i>
@@ -113,7 +114,7 @@
               </a>
             </li>
           </ul>
-
+          @elseif(Auth::guard('dosen')->check())
           <hr class="my-3">
           <!-- Heading -->
           <h6 class="navbar-heading p-0 text-muted">
@@ -123,37 +124,20 @@
           <ul class="navbar-nav mb-md-3">
             <li class="nav-item">
               <a class="nav-link {{ Route::is('presensi.index') ? 'active' : '' }}" href="{{ route('presensi.index') }}">
-                <i class="ni ni-button-power text-red"></i>
+                <i class="ni ni-badge text-red"></i>
                 <span class="nav-link-text">Data Presensi</span>
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link {{ Route::is('beritaacara.index') ? 'active' : '' }}" href="{{ route('beritaacara.index') }}">
-                <i class="ni ni-button-power text-red"></i>
+                <i class="ni ni-book-bookmark text-red"></i>
                 <span class="nav-link-text">Berita Acara</span>
               </a>
             </li>
            
           </ul>
 
-         
-          <!-- Divider -->
-          <hr class="my-3">
-          <!-- Heading -->
-          <h6 class="navbar-heading p-0 text-muted">
-            <span class="docs-normal">Documentation</span>
-            <span class="docs-mini">D</span>
-          </h6>
-          <!-- Navigation -->
-          <ul class="navbar-nav mb-md-3">
-            <li class="nav-item">
-              <a class="nav-link" href="#" target="_blank">
-                <i class="ni ni-spaceship"></i>
-                <span class="nav-link-text">Dokumentasi</span>
-              </a>
-            </li>
-         
-          </ul>
+         @endif
         </div>
       </div>
     </div>

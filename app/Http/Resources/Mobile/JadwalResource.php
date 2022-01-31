@@ -75,8 +75,14 @@ class JadwalResource extends JsonResource
                     fn () => config('services.image.baseUrl').config('services.image.path').'/'.$this->jadwal->dosens->foto
                 );
             }),
-            'pertemuan_ke'=> $this->whenLoaded('presensi',function(){
-                return $this->presensi->pertemuan_ke;
+            'presensi_id' => $this->whenLoaded('presensi',function(){
+                return $this->presensi->id;
+            }),
+            'hari_presensi' => $this->whenLoaded('presensi',function(){
+                return $this->presensi->hari->nama_hari;
+            }),
+            'pertemuan_ke'=> $this->whenLoaded('jadwal',function(){
+                return $this->jadwal->pertemuan_ke;
             }),
             'status_kelas' => $this->whenLoaded('presensi',function(){
                 return (\App\Helpers\GeneralHelper::check_jam_presensi($this->presensi->jam_presensi_dibuka,$this->presensi->jam_presensi_ditutup,$this->presensi->toleransi_keterlambatan))?'Opened':'Closed';

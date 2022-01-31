@@ -100,8 +100,8 @@
                 @foreach($beritaAcaras as $beritaAcara)
                   <tr>
                     <th>{{ $loop->iteration }}</th>
-                    @if(isset($beritaAcara->tanggal_pertemuan))
-                      <th>{{ $beritaAcara->hari->nama_hari}} / {{ $beritaAcara->tanggal_pertemuan }}</th>
+                    @if($beritaAcara->total_mahasiswa_hadir != null)
+                      <th>{{ $beritaAcara->hari->nama_hari}} {{ (isset($beritaAcara->tanggal_pertemuan))? ' / '.$beritaAcara->tanggal_pertemuan:'' }}</th>
                       <th>{{ \App\Helpers\GeneralHelper::format_time_2digit($jadwal->jam_mulai).' - '. \App\Helpers\GeneralHelper::format_time_2digit($jadwal->jam_selesai) }} WIB</th>
                       <th>{{ $beritaAcara->pertemuan_ke }}</th>
                     @else
@@ -109,22 +109,16 @@
                       <th></th>
                       <th></th>
                     @endif
-                  
                     <th>{{ $beritaAcara->total_mahasiswa_hadir }}</th>
                     <th>{{ $beritaAcara->total_mahasiswa_izin }}</th>
-                    <th>{{ $beritaAcara->total_mahasiswa_alpha }}</th>
+                    <th>{{ ($beritaAcara->total_mahasiswa_hadir != null) ?$beritaAcara->total_mahasiswa_alpha:'' }}</th>
                     <th>{{ $beritaAcara->materi_perkuliahan }}</th>
                     <th>{{ $beritaAcara->media_perkuliahan }}</th>
                     <th>{{ $beritaAcara->catatan_perkuliahan }}</th>
                     <th>
-                      @if(isset($beritaAcara->tanggal_pertemuan) && $beritaAcara->status == 'aktif')
-                      <button id="tambah" class="tambah btn btn-sm btn-icon btn-primary" type="button">
-                        <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
-                        <span class="btn-inner--text">Tambah</span>
-                      </button>
-                      @elseif(!isset($beritaAcara->tanggal_pertemuan) && $beritaAcara->status == 'aktif')
-                        @if(strtotime($beritaAcara->jam_presensi_dibuka)<= strtotime($time) && strtotime($time)<=strtotime('+'.$beritaAcara->toleransi_keterlambatan.' minutes', strtotime($beritaAcara->jam_presensi_ditutup)))
-                          <button id="tambah" class="tambah btn btn-sm btn-icon btn-primary" type="button">
+                      @if($beritaAcara->status == 'aktif')
+                        @if($beritaAcara->total_mahasiswa_hadir != null && strtotime($beritaAcara->jam_presensi_dibuka)>= strtotime($time) || strtotime($time)>=strtotime('+'.$beritaAcara->toleransi_keterlambatan.' minutes', strtotime($beritaAcara->jam_presensi_ditutup)))
+                          <button id="tambah" class="tambah btn btn-sm btn-icon btn-primary"  type="button" data-id="{{ \Crypt::encrypt($beritaAcara->id) }}" >
                             <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
                             <span class="btn-inner--text">Tambah</span>
                           </button>
@@ -134,7 +128,6 @@
                             <span class="btn-inner--text">Tambah</span>
                           </button>
                         @endif
-                      @else
                       @endif
                     </th>
                   </tr>
@@ -161,40 +154,35 @@
          
           <form id="form-data" action="#" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}
-            <input type="hidden"  name="kode_jadwal" value="{{ $jadwal->kode_jadwal }}">
+         
             <div class="modal-body">
               <div class="form-group row">
                 <div class="col-md-6">
-                  <label for="hari" class="form-control-label">Hari <span style="color: red">*</span></label>
-                  <select name="hari_id" id="hari" class="form-control">
-                   
-                  </select>
-                  <span><small class="text-danger tanggal-presensi-dibuka-error" id="tanggal-presensi-dibuka-error"></small></span>
+                  <label for="tanggal_pertemuan" class="form-control-label">Tanggal Pertemuan <span style="color: red">*</span></label>
+                  <input type="date" class="form-control" name="tanggal_pertemuan" id="tanggalPertemuan">
+                  <span><small class="text-danger tanggal-pertemuan-error" id="tanggal-pertemuan-error"></small></span>
                 </div>
                
               </div>
               <div class="form-group row">
-                <div class="col-md-6">
-                  <label for="jam_presensi_dibuka" class="form-control-label">Jam Presensi Dibuka <span style="color: red">*</span></label>
-                  <input id="jam_presensi_dibuka" name="jam_presensi_dibuka" type="time" placeholder="masukkan jam mulai" class="form-control">
-                  <span><small class="text-danger jam-presensi-dibuka-error" id="jam-presensi-dibuka-error"></small></span>
-                </div>
-                <div class="col-md-6">
-                  <label for="jam_presensi_ditutup" class="form-control-label">Jam Presensi Ditutup <span style="color: red">*</span></label>
-                  <input id="jam_presensi_ditutup" name="jam_presensi_ditutup" type="time" placeholder="masukkan jam selesai" class="form-control">
-                  <span><small class="text-danger jam-presensi-ditutup-error" id="jam-presensi-ditutup-error"></small></span>
+                <div class="col-md-12">
+                  <label for="materi_perkuliahan" class="form-control-label">Materi Kuliah Yang Diberikan <span style="color: red">*</span></label>
+                  <textarea name="materi_perkuliahan" id="materi_perkuliahan" cols="2" rows="2" class="form-control"></textarea>
+                  <span><small class="text-danger materi-perkuliahan-error" id="materi-perkuliahan-error"></small></span>
                 </div>
               </div>
               <div class="form-group row">
-                <div class="col-md-6">
-                  <label for="toleransi_keterlambatan" class="form-control-label">Toleransi Keterlambatan <span style="color: red">*</span></label>
-                  <div class="input-group">
-                    <input id="toleransi_keterlambatan" name="toleransi_keterlambatan" type="number" placeholder="toleransi keterlambatan" class="form-control">
-                    <div class="input-group-append">
-                      <span class="input-group-text" id="basic-addon2">menit</span>
-                    </div>
-                  </div>
-                  <span><small class="text-danger toleransi-keterlambatan-error" id="toleransi-keterlambatan-error"></small></span>
+                <div class="col-md-12">
+                  <label for="media_perkuliahan" class="form-control-label">Media Kuliah Yang Digunakan </label>
+                  <input type="text" name="media_perkuliahan" id="media_perkuliahan" class="form-control"></input>
+                  <span><small class="text-danger media-perkuliahan-error" id="media-perkuliahan-error"></small></span>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-md-12">
+                  <label for="catatan_perkuliahan" class="form-control-label">Catatan </label>
+                  <textarea name="catatan_perkuliahan" id="catatan_perkuliahan" cols="2" rows="2" class="form-control"></textarea>
+                  <span><small class="text-danger catatan-perkuliahan-error" id="catatan-perkuliahan-error"></small></span>
                 </div>
               </div>
                           
@@ -272,19 +260,21 @@
 
                       $('#tambah').on('click',function(e){
                           $('#Modal').modal();
-                          $('#modal-label').html('Tambah Data Beacon');
+                          $('#modal-label').html('Tambah Berita Acara');
                           $('#submit-data').html('Simpan');
+                          var id = $(this).data('id');
                           reset_model_value()
                           $('#submit-data').on('click',function(e){
                             reset_error()
                             $.ajax({
-                                  type: 'POST',
+                                  type: 'PUT',
                                   data: $("#form-data").serialize(),
-                                  url: "{{ route('beacon.store') }}",
+                                  url: "{{ url('beritaacara')}}/"+id,
                                   success : function(data){
+                                    console.log(data);
                                     if(JSON.parse(data.meta.code) == 200){
                                         $('#Modal').modal('hide');
-                                        swal.fire("Selesai","Beacon berhasil ditambahkan","success").then((val)=>{
+                                        swal.fire("Selesai","Berita Acara berhasil ditambahkan","success").then((val)=>{
                                           location.reload();
                                         });
                                     }
@@ -302,150 +292,7 @@
                         })                               
                       });
 
-                      $('#dataTable tbody').on('click', '.edit', function () {
-                          $('#Modal').modal();
-                          $('#modal-label').html('Edit Data Beacon');
-                          $('#submit-data').html('Simpan');
-                          reset_model_value()
-                         
-                          var id                      = $(this).data('id');
-                          var kode_beacon             = $(this).data('kode_beacon');
-                          var uuid                    = $(this).data('uuid');
-                          var major                   = $(this).data('major');
-                          var minor                   = $(this).data('minor');
-                     
-                          $('#kode_beacon').val(kode_beacon);
-                          $('#uuid').val(uuid);
-                          $('#major').val(major);
-                          $('#minor').val(minor);
-                                      
-                          $('#submit-data').on('click',function(e){
-                            reset_error()
-                            $.ajax({
-                                type: 'PUT',
-                                data: $("#form-data").serialize(),
-                                url: "{{ url('beacon/update') }}/"+id,
-                                success : function(data){
-                                  if(JSON.parse(data.meta.code) == 200){
-                                        $('#Modal').modal('hide');
-                                        swal.fire("Selesai","Beacon berhasil diupdate","success").then((val)=>{
-                                          location.reload();
-                                        });
-                                    }
-                                },
-                                error: function(xhr, status, err) {
-                                      var response = JSON.parse(xhr.responseText)
-                                      if(response.meta.code == 401){
-                                          error_message(response.data.error);
-                                      }
-                                      if(response.meta.code == 500){
-                                          toastr.error('Maaf terjadi kesalahan pada sistem. Coba Ulangi lagi !');
-                                      }
-                                }  
-                            });
-                          })
-                      });       
-
-                      $('#dataTable tbody').on('click', '.hapus', function () {
-                          var id          = $(this).data('id');
-                         
-                          $.ajax({
-                                    url:"{{ url('beacon/delete') }}/"+id,
-                                    data:{
-                                      "_token": "{{ csrf_token() }}"
-                                    },
-                                    type:"DELETE",
-                                    success : function(data){
-                                      if(JSON.parse(data.meta.code) == 200){
-                                        $('#Modal').modal('hide');
-                                        swal.fire("Selesai","Matakuliah berhasil dihapus","success").then((val)=>{
-                                          location.reload();
-                                        });
-                                      }
-                                    },
-                                    error:function(XMLHttpRequest){
-                                      toastr.error('Maaf terjadi kesalahan pada sistem. Coba Ulangi lagi !');
-                                    }
-                                });
-                      });
-
-
-                     
-                      //fetch data method
-                      function fetch_data(id,dataTable){   
-                        dataTable.DataTable({
-                                pageLength: 10,
-                                lengthChange: true,
-                                bFilter: true,
-                                destroy: true,
-                                processing: true,
-                                serverSide: true,
-                                oLanguage: {
-                                    sZeroRecords: "Tidak Ada Data",
-                                    sSearch: "Pencarian _INPUT_",
-                                    sLengthMenu: "_MENU_",
-                                    sInfo: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-                                    sInfoEmpty: "0 data",
-                                    oPaginate: {
-                                        sNext: "<i class='fa fa-angle-right'></i>",
-                                        sPrevious: "<i class='fa fa-angle-left'></i>"
-                                    }
-                                },
-                                ajax: {
-                                    url:"{{url('data/presensi')}}",
-                                    type: "GET",
-                                    data:{
-                                      presensi_id : id
-                                    }
-                                },
-                                
-                                columns: [
-                                    { 
-                                        data: 'DT_RowIndex',
-                                        name: 'DT_Row_Index', 
-                                        "className": "text-center" 
-                                    },
-                                    {
-                                        data: 'nim',
-                                     //   "className": "text-center"                                        
-                                    },     
-                                    {
-                                        data: 'nama',
-                                       // "className": "text-center"                                        
-                                    },    
-                                    {
-                                        data: 'hadir',
-                                        "className": "text-center"                                        
-                                    }, 
-                                    {
-                                        data: 'izin',
-                                        "className": "text-center"                                        
-                                    },    
-                                    {
-                                        data: 'alfa',
-                                        "className": "text-center"                                        
-                                    },       
-                                    {
-                                        data: 'tanggal_presensi',
-                                        "className": "text-center"                                        
-                                    },   
-                                    {
-                                        data: 'jam_presensi',
-                                        "className": "text-center"                                        
-                                    },                     
-                                    {
-                                        data: 'action',
-                                        "className": "text-center",
-                                        orderable: false, 
-                                        searchable: false    
-                                    },
-                                ]
-                            });
-                         
-                        }
-
-
-
+                      
                     function reset_error(){
                         $( '#kode-beacon-error' ).html('');
                         $( '#uuid-error' ).html('');

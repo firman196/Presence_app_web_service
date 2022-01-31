@@ -380,7 +380,7 @@ class DataTableController extends Controller
                 ->addColumn('action', function($row){
                     $ids = \Crypt::encrypt($row->kode_beacon);
                    
-                    $btn = '<button type="button" class="edit btn btn-sm btn-default" data-id="'.$ids.'" data-kode_beacon="'.$row->kode_beacon.'" data-uuid="'.$row->uuid.'" data-major="'.$row->major.'" data-minor="'.$row->minor.'" > <i class="fas fa-edit"></i> Edit</button>
+                    $btn = '<button type="button" class="edit btn btn-sm btn-default" data-id="'.$ids.'" data-kode_beacon="'.$row->kode_beacon.'" data-uuid="'.$row->uuid.'" data-major="'.$row->major.'" data-minor="'.$row->minor.'" data-jarak_maksimal="'.$row->jarak_maksimal.'"> <i class="fas fa-edit"></i> Edit</button>
                             <button type="button" class="hapus btn btn-sm btn-danger" data-id="'.$ids.'"> <i class="fas fa-trash"></i> Hapus</button>';
                     return $btn;
                 })
@@ -488,11 +488,11 @@ class DataTableController extends Controller
 
 
      /**
-     * Datatable Presesnsi by kode jadwal
+     * Datatable rekap kehadiran mahasiswa
      *
      * @return \Illuminate\Http\Response
      */
-    public function presensi(Request $request)
+    public function rekapKehadiran(Request $request)
     {
         if ($request->ajax()) {
             $ids   = \Crypt::decrypt($request->presensi_id);
@@ -537,16 +537,18 @@ class DataTableController extends Controller
                     }
                     return $jam_presensi;
                 })
-                ->addColumn('action', function($row){
+              /*  ->addColumn('action', function($row){
                     $ids = \Crypt::encrypt($row->id);
-                    $btn = '<button type="button" class="hapus btn btn-sm btn-danger" data-id="'.$ids.'"> <i class="fas fa-trash"></i> Hapus</button>';
+                    $btn = '<button type="button" class="edit-presensi btn btn-sm btn-default" data-id="'.$ids.'"> <i class="fas fa-edit"></i> Edit</button>';
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['action'])*/
                 ->escapeColumns()
                 ->toJson();
         }
     }
+
+
 
 
 

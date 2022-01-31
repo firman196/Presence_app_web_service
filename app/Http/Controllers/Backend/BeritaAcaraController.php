@@ -4,9 +4,16 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+//models
+use App\Models\Krs;
 use App\Models\Jadwal;
 use App\Models\Presensi;
-use Carbon\Carbon;
+use App\Models\RekapKehadiran;
+
+use App\Helpers\ResponseFormatter;
+use App\Http\Requests\BeritaAcaraUpdateRequest;
+
 
 class BeritaAcaraController extends Controller
 {
@@ -42,7 +49,7 @@ class BeritaAcaraController extends Controller
      */
     public function store(Request $request)
     {
-        //
+       
     }
 
     /**
@@ -83,9 +90,58 @@ class BeritaAcaraController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(BeritaAcaraUpdateRequest $request, $id)
     {
-        //
+        try{
+            $ids                    = \Crypt::decrypt($id);
+            $validated              = $request->validated();
+            $validated['status']    = 'nonaktif';
+
+            //update status presensi
+            Presensi::where('id',$ids)->update($validated);
+            //rubah status rekap kehadiran
+            RekapKehadiran::where('presensi_id',$ids)->where('kode_status_presensi','A')->where('status','default')->update(['status'=>'expired']);
+            
+            $presensi               = Presensi::where('id',$ids)->first();
+
+            //mengaktifkan presensi pertemuan selanjutnya
+            $pertemuanSekarang      = $presensi->pertemuan_ke + 1;
+            $presensiSekarang       = Presensi::where('pertemuan_ke',$pertemuanSekarang)->where('kode_jadwal',$presensi->kode_jadwal)->first();
+
+            //generate data krs
+            $data_krs = Krs::where('kode_jadwal',$presensiSekarang->kode_jadwal)->get();
+            $data = array();
+            foreach($data_krs as $krs){
+                $datas    = [
+                    'presensi_id'           => $presensiSekarang->id,
+                    'kode_jadwal'           => $presensiSekarang->kode_jadwal,
+                    'nim'                   => $krs->nim,
+                    'kode_status_presensi'  => 'A'
+                ];
+                $data[] = $datas;
+            }
+            ///mengaktifkan presensi selanjutnya
+            $presensiSekarang->status= 'aktif';
+            //semua mahasiswa dianggap alpha secara default
+            $presensiSekarang->total_mahasiswa_alpha = $data_krs->count();
+            $presensiSekarang->save();
+            
+            //membuat rekap kehadiran untuk presensi selanjutnya
+            RekapKehadiran::insert($data);
+
+            //mengupdate presensi di jadwal
+            Jadwal::where('kode_jadwal',$presensiSekarang->kode_jadwal)->update(['pertemuan_ke'=>$pertemuanSekarang]);
+
+            return ResponseFormatter::success(
+                'updated data successfully',
+                200
+            );
+        }catch(\Exception $e){
+            return ResponseFormatter::error([
+                'message' => 'Something went wrong',
+                'error' => $e->getMessage(),
+            ],'updated data failed', 500);
+        }
     }
 
     /**

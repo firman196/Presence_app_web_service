@@ -88,22 +88,10 @@
             <div id="collapse{{ $presensi->pertemuan_ke }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
               <div class="card-body">
                 <div class="row">
-                  @if($presensi->status == 'aktif')
-                    <a href="#" id="nonaktifkan" class="ml-auto mb-4 nonaktifkan btn btn-icon btn-danger" data-id="{{ \Crypt::encrypt($presensi->id) }}">
+                    <a href="#" id="generate-pertemuan" class="ml-auto mb-4 generate-pertemuan btn btn-icon btn-default" data-id="{{ \Crypt::encrypt($presensi->id) }}" data-hari_id="{{ $presensi->hari_id}}" data-jam_presensi_dibuka="{{ $presensi->jam_presensi_dibuka}}" data-jam_presensi_ditutup="{{ $presensi->jam_presensi_ditutup }}" data-toleransi_keterlambatan="{{ $presensi->toleransi_keterlambatan }}">
                       <span class="btn-inner--icon"><i class="fas fa-sync-alt"></i></span>
-                      <span class="btn-inner--text">Non Aktifkan</span>
+                      <span class="btn-inner--text">Edit Settingan</span>
                     </a>
-                  @elseif(isset($presensi->tanggal_pertemuan))
-                    <a href="#" class="ml-auto mb-4  btn btn-icon btn-danger" data-id="{{ \Crypt::encrypt($presensi->id) }}" disabled>
-                      <span class="btn-inner--icon"><i class="fas fa-sync-alt"></i></span>
-                      <span class="btn-inner--text">Non Aktifkan</span>
-                    </a>
-                  @else
-                    <a href="#" id="generate-pertemuan" class="ml-auto mb-4 generate-pertemuan btn btn-icon btn-primary" data-id="{{ \Crypt::encrypt($presensi->id) }}" data-hari_id="{{ $presensi->hari_id}}" data-jam_presensi_dibuka="{{ $presensi->jam_presensi_dibuka}}" data-jam_presensi_ditutup="{{ $presensi->jam_presensi_ditutup }}" data-toleransi_keterlambatan="{{ $presensi->toleransi_keterlambatan }}">
-                      <span class="btn-inner--icon"><i class="fas fa-sync-alt"></i></span>
-                      <span class="btn-inner--text">Aktifkan</span>
-                    </a>
-                  @endif
                 </div>
                 <div class="table-responsive">
                   <input type="hidden" id="presensi-id" value="{{ \Crypt::encrypt($presensi->id) }}">
@@ -118,7 +106,7 @@
                         <th>ALFA</th>
                         <th>TANGGAL PRESENSI</th>
                         <th>JAM PRESENSI</th>
-                        <th>Action</th>
+                     <!--   <th>Action</th> -->
                       </tr>
                     </thead>
                     <tbody>
@@ -224,7 +212,7 @@
                              var jam_dibuka = $(this).data('jam_presensi_dibuka');
                              var jam_ditutup = $(this).data('jam_presensi_ditutup');
                              var toleransi   = $(this).data('toleransi_keterlambatan');
-
+                           
                              $('#hari option[value="'+hari+'"]').prop("selected", true);
                              $('#jam_presensi_dibuka').val(jam_dibuka);
                              $('#jam_presensi_ditutup').val(jam_ditutup);
@@ -253,9 +241,8 @@
                                   }  
                                 });
                               }) 
-                             
-                           });
-                        });
+                           });                         
+                      });
                       
 
                       $('#tambah').on('click',function(e){
@@ -380,7 +367,7 @@
                                     }
                                 },
                                 ajax: {
-                                    url:"{{url('data/presensi')}}",
+                                    url:"{{url('data/rekap-kehadiran')}}",
                                     type: "GET",
                                     data:{
                                       presensi_id : id
@@ -421,12 +408,12 @@
                                         data: 'jam_presensi',
                                         "className": "text-center"                                        
                                     },                     
-                                    {
+                                /*    {
                                         data: 'action',
                                         "className": "text-center",
                                         orderable: false, 
                                         searchable: false    
-                                    },
+                                    },*/
                                 ]
                             });
                          

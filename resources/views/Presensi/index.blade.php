@@ -169,7 +169,7 @@
                                   },
                                   url: "{{ url('generate/presensi') }}/"+id,
                                   success : function(data){
-                                    console.log(data)
+                                  
                                       if(JSON.parse(data.meta.code) == 200){
                                           swal.fire("Selesai","Presensi berhasil diupdate","success").then((val)=>{
                                             location.reload();

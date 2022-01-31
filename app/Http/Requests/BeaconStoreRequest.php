@@ -31,7 +31,8 @@ class BeaconStoreRequest extends FormRequest
             'kode_ruang'  => 'required|string|max:10',
             'uuid'        => 'required',
             'major'       => 'required|numeric',
-            'minor'       => 'required|numeric'
+            'minor'       => 'required|numeric',
+            'jarak_maksimal'=> 'required|numeric'
         ];
     } 
 
