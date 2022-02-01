@@ -25,10 +25,10 @@ class JadwalResource extends JsonResource
                 return $this->jadwal->kode_jadwal;
             }),
             'jam_mulai'         => $this->whenLoaded('jadwal',function(){
-                return $this->jadwal->jam_mulai;
+                return \App\Helpers\GeneralHelper::format_time_2digit($this->jadwal->jam_mulai);
             }),
             'jam_selesai'       => $this->whenLoaded('jadwal',function(){
-                return $this->jadwal->jam_selesai;
+                return \App\Helpers\GeneralHelper::format_time_2digit($this->jadwal->jam_selesai);
             }),
             'hari_id'           => $this->whenLoaded('jadwal',function(){
                 return $this->jadwal->hari->id;
@@ -90,7 +90,31 @@ class JadwalResource extends JsonResource
             'status_kelas' => $this->whenLoaded('presensi',function(){
                 return (\App\Helpers\GeneralHelper::check_jam_presensi($this->presensi->jam_presensi_dibuka,$this->presensi->jam_presensi_ditutup,$this->presensi->toleransi_keterlambatan))?'Opened':'Closed';
             }),
-            'status_presensi'=>($this->status)?$this->status:null
+            'status_presensi'=>($this->status)?$this->status:null,
+            'tanggal_pertemuan' => $this->whenLoaded('presensi',function(){
+                return \App\Helpers\GeneralHelper::tgl_indo($this->presensi->tanggal_pertemuan);
+            }),
+            'total_mahasiswa_hadir' => $this->whenLoaded('presensi',function(){
+                return $this->presensi->total_mahasiswa_hadir;
+            }),
+            'total_mahasiswa_izin' => $this->whenLoaded('presensi',function(){
+                return $this->presensi->total_mahasiswa_izin;
+            }),
+            'total_mahasiswa_alpha' => $this->whenLoaded('presensi',function(){
+                return $this->presensi->total_mahasiswa_alpha;
+            }),
+            'materi_perkuliahan' => $this->whenLoaded('presensi',function(){
+                return $this->presensi->materi_perkuliahan;
+            }),
+            'penugasan' => $this->whenLoaded('presensi',function(){
+                return $this->presensi->penugasan;
+            }),
+            'media_perkuliahan' => $this->whenLoaded('presensi',function(){
+                return $this->presensi->media_perkuliahan;
+            }),
+            'catatan_perkuliahan' => $this->whenLoaded('presensi',function(){
+                return $this->presensi->materi_perkuliahan;
+            }),
         ];
 /*
         'kode_matakuliah'   => $this->whenLoaded('matakuliah',function(){

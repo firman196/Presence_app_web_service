@@ -39,7 +39,7 @@ Route::get('/', function () {
     return view('dashboard');
 });
 Auth::routes();
-Route::group(['middleware' => 'admin:admin'], function () {
+Route::middleware(['admin:admin'])->group(function () {
     //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::prefix('mahasiswa')->group(function () {
         Route::get('/',[MahasiswaController::class, 'index'])->name('mahasiswa.index');
@@ -117,13 +117,13 @@ Route::group(['middleware' => 'admin:admin'], function () {
        
     });
 
-
+    
 });
 
 
 
 
-Route::group(['middleware' => ['dosen:dosen','dosen:admin'] ], function() {   
+Route::middleware(['dosen:dosen'])->middleware(['admin:admin'])->group(function() {   
     Route::prefix('jadwal')->group(function () {
         Route::get('/',[JadwalController::class, 'index'])->name('jadwal.index');
         Route::post('/store',[JadwalController::class, 'store'])->name('jadwal.store');
@@ -134,7 +134,7 @@ Route::group(['middleware' => ['dosen:dosen','dosen:admin'] ], function() {
     //presensi
     Route::resource('presensi', PresensiController::class);
     Route::put('generate/presensi/{id}', [PresensiController::class,'generate']);
-    
+    Route::put('status/presensi/{id}', [PresensiController::class,'updateStatus']);
     //berita acara
     Route::resource('beritaacara', BeritaAcaraController::class);
 });

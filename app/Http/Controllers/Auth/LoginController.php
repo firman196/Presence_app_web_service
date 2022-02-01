@@ -9,6 +9,10 @@ use App\Http\Requests\AuthLoginRequest;
 use Illuminate\Http\Request;
 use App\Models\Admin;
 
+
+use Illuminate\Support\Facades\Auth;
+
+
 class LoginController extends Controller
 {
     /*

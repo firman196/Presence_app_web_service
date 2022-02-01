@@ -2,7 +2,7 @@
 @section('page-content')
  
  <!-- Header -->
-  <div class="header bg-primary ">
+  <div class="header bg-default ">
     <div class="container-fluid">
       <div class="header-body">
         <div class="row align-items-center py-4">
@@ -106,7 +106,7 @@
                         <th>ALFA</th>
                         <th>TANGGAL PRESENSI</th>
                         <th>JAM PRESENSI</th>
-                     <!--   <th>Action</th> -->
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -124,7 +124,7 @@
 
     <!-- modal -->
     <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="modal-label"></h5>
@@ -133,47 +133,23 @@
             </button>
           </div>
          
-          <form id="form-data" action="#" method="POST" enctype="multipart/form-data">
+          <form id="form-status" action="#" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}
             <input type="hidden"  name="kode_jadwal" value="{{ $jadwal->kode_jadwal }}">
             <div class="modal-body">
               <div class="form-group row">
-                <div class="col-md-6">
-                  <label for="hari" class="form-control-label">Hari <span style="color: red">*</span></label>
-                  <select name="hari_id" id="hari" class="form-control">
-                    @foreach ($haris as $hari)
-                    <option value="{{ $hari->id }}">{{ $hari->nama_hari }}</option> 
+                <div class="col-md-12">
+                  <label for="status" class="form-control-label">Status Kehadiran <span style="color: red">*</span></label>
+                  <select name="status" id="status" class="form-control">
+                    @foreach ($status as $statuss)
+                    <option value="{{ $statuss->kode }}">{{ $statuss->kode }}</option> 
                     @endforeach
                   </select>
-                  <span><small class="text-danger tanggal-presensi-dibuka-error" id="tanggal-presensi-dibuka-error"></small></span>
+                  <span><small class="text-danger status-error" id="status-error"></small></span>
                 </div>
                
               </div>
-              <div class="form-group row">
-                <div class="col-md-6">
-                  <label for="jam_presensi_dibuka" class="form-control-label">Jam Presensi Dibuka <span style="color: red">*</span></label>
-                  <input id="jam_presensi_dibuka" name="jam_presensi_dibuka" type="time" placeholder="masukkan jam mulai" class="form-control">
-                  <span><small class="text-danger jam-presensi-dibuka-error" id="jam-presensi-dibuka-error"></small></span>
-                </div>
-                <div class="col-md-6">
-                  <label for="jam_presensi_ditutup" class="form-control-label">Jam Presensi Ditutup <span style="color: red">*</span></label>
-                  <input id="jam_presensi_ditutup" name="jam_presensi_ditutup" type="time" placeholder="masukkan jam selesai" class="form-control">
-                  <span><small class="text-danger jam-presensi-ditutup-error" id="jam-presensi-ditutup-error"></small></span>
-                </div>
-              </div>
-              <div class="form-group row">
-                <div class="col-md-6">
-                  <label for="toleransi_keterlambatan" class="form-control-label">Toleransi Keterlambatan <span style="color: red">*</span></label>
-                  <div class="input-group">
-                    <input id="toleransi_keterlambatan" name="toleransi_keterlambatan" type="number" placeholder="toleransi keterlambatan" class="form-control">
-                    <div class="input-group-append">
-                      <span class="input-group-text" id="basic-addon2">menit</span>
-                    </div>
-                  </div>
-                  <span><small class="text-danger toleransi-keterlambatan-error" id="toleransi-keterlambatan-error"></small></span>
-                </div>
-              </div>
-                          
+                                       
               <div class="text-right">
                   <a href="#"id="submit-data" class="submit-data btn btn-primary">Aktifkan</a>
               </div>
@@ -279,31 +255,25 @@
 
                       $('#dataTable tbody').on('click', '.edit', function () {
                           $('#Modal').modal();
-                          $('#modal-label').html('Edit Data Beacon');
+                          $('#modal-label').html('Edit Status Presensi Mahasiswa');
                           $('#submit-data').html('Simpan');
                           reset_model_value()
                          
                           var id                      = $(this).data('id');
-                          var kode_beacon             = $(this).data('kode_beacon');
-                          var uuid                    = $(this).data('uuid');
-                          var major                   = $(this).data('major');
-                          var minor                   = $(this).data('minor');
+                          var status                  = $(this).data('kode_status_presensi');
                      
-                          $('#kode_beacon').val(kode_beacon);
-                          $('#uuid').val(uuid);
-                          $('#major').val(major);
-                          $('#minor').val(minor);
+                          $('#status option[value="'+status+'"]').prop("selected", true);
                                       
                           $('#submit-data').on('click',function(e){
                             reset_error()
                             $.ajax({
                                 type: 'PUT',
-                                data: $("#form-data").serialize(),
-                                url: "{{ url('beacon/update') }}/"+id,
+                                data: $("#form-status").serialize(),
+                                url: "{{ url('status/presensi') }}/"+id,
                                 success : function(data){
                                   if(JSON.parse(data.meta.code) == 200){
                                         $('#Modal').modal('hide');
-                                        swal.fire("Selesai","Beacon berhasil diupdate","success").then((val)=>{
+                                        swal.fire("Selesai","Status Kehadiran berhasil diupdate","success").then((val)=>{
                                           location.reload();
                                         });
                                     }
@@ -408,12 +378,12 @@
                                         data: 'jam_presensi',
                                         "className": "text-center"                                        
                                     },                     
-                                /*    {
+                                    {
                                         data: 'action',
                                         "className": "text-center",
                                         orderable: false, 
                                         searchable: false    
-                                    },*/
+                                    },
                                 ]
                             });
                          

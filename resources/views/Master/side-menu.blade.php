@@ -24,14 +24,14 @@
           <ul class="navbar-nav">
             <li class="nav-item">
               <a class="nav-link" href="#">
-                <i class="ni ni-chart-pie-35 text-info"></i>
+                <i class="ni ni-chart-pie-35 text-red"></i>
                 <span class="nav-link-text">Dashboard</span>
               </a>
             </li>
             @if(Auth::guard('admin')->check())
             <li class="nav-item">
               <a class="nav-link {{ Route::is('mahasiswa.index') || Route::is('dosen.index') ? 'active' : '' }}" href="#navbar-dashboards" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-dashboards">
-                <i class="ni ni-archive-2 text-green"></i>
+                <i class="ni ni-archive-2 text-red"></i>
                 <span class="nav-link-text">Master Data</span>
               </a>
               <div class="collapse show" id="navbar-dashboards">
@@ -99,6 +99,7 @@
                 </ul>
               </div>
             </li>
+            
           </ul>
           <ul class="navbar-nav mb-md-3">
             <li class="nav-item">
@@ -113,6 +114,18 @@
                 <span class="nav-link-text">Data Admin</span>
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link {{ Route::is('presensi.index') ? 'active' : '' }}" href="{{ route('presensi.index') }}">
+                <i class="ni ni-badge text-red"></i>
+                <span class="nav-link-text">Data Presensi</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{ Route::is('beritaacara.index') ? 'active' : '' }}" href="{{ route('beritaacara.index') }}">
+                <i class="ni ni-book-bookmark text-red"></i>
+                <span class="nav-link-text">Berita Acara</span>
+              </a>
+            </li>
           </ul>
           @elseif(Auth::guard('dosen')->check())
           <hr class="my-3">
@@ -122,6 +135,12 @@
             <span class="docs-mini">D</span>
           </h6>
           <ul class="navbar-nav mb-md-3">
+            <li class="nav-item">
+              <a href="{{ route('jadwal.index') }}" class="nav-link">
+                <span class="sidenav-mini-icon"> J </span>
+                <span class="sidenav-normal"> Jadwal Saya </span>
+              </a>
+            </li>
             <li class="nav-item">
               <a class="nav-link {{ Route::is('presensi.index') ? 'active' : '' }}" href="{{ route('presensi.index') }}">
                 <i class="ni ni-badge text-red"></i>
@@ -145,23 +164,10 @@
   <!-- Main content -->
   <div class="main-content" id="panel">
     <!-- Topnav -->
-    <nav class="navbar navbar-top navbar-expand navbar-dark bg-primary border-bottom">
+    <nav class="navbar navbar-top navbar-expand navbar-dark bg-default border-bottom">
       <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <!-- Search form -->
-          <form class="navbar-search navbar-search-light form-inline mr-sm-3" id="navbar-search-main">
-            <div class="form-group mb-0">
-              <div class="input-group input-group-alternative input-group-merge">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="fas fa-search"></i></span>
-                </div>
-                <input class="form-control" placeholder="Search" type="text">
-              </div>
-            </div>
-            <button type="button" class="close" data-action="search-close" data-target="#navbar-search-main" aria-label="Close">
-              <span aria-hidden="true">×</span>
-            </button>
-          </form>
+         
           <!-- Navbar links -->
           <ul class="navbar-nav align-items-center  ml-md-auto ">
             <li class="nav-item d-xl-none">
@@ -203,16 +209,9 @@
               </a>
               <div class="dropdown-menu  dropdown-menu-right ">
                 <div class="dropdown-header noti-title">
-                  <h6 class="text-overflow m-0">Welcome!</h6>
+                  <h6 class="text-overflow m-0">Good Bye!</h6>
                 </div>
-                <a href="#!" class="dropdown-item">
-                  <i class="ni ni-single-02"></i>
-                  <span>My profile</span>
-                </a>
-                <a href="#!" class="dropdown-item">
-                  <i class="ni ni-settings-gear-65"></i>
-                  <span>Settings</span>
-                </a>
+              
                 <div class="dropdown-divider"></div>
                 <form action="{{ route('logout') }}" method="POST">
                   @csrf

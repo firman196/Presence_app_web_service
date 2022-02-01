@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class StatusPresensi extends Model
 {
     use HasFactory;
-
+    protected $keyType = 'string';
+    public $incrementing = false;
     protected $primaryKey = 'kode';
     protected $fillable = [
-        'kode',
         'keterangan'
     ];
 

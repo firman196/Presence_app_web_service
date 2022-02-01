@@ -2,7 +2,7 @@
 @section('page-content')
  
  <!-- Header -->
-  <div class="header bg-primary ">
+  <div class="header bg-default ">
     <div class="container-fluid">
       <div class="header-body">
         <div class="row align-items-center py-4">

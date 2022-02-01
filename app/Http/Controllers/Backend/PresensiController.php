@@ -9,6 +9,7 @@ use App\Models\Presensi;
 use App\Models\Jadwal;
 use App\Models\Krs;
 use App\Models\RekapKehadiran;
+use App\Models\StatusPresensi;
 use App\Helpers\ResponseFormatter;
 use App\Http\Requests\PresensiUpdateRequest;
 
@@ -61,13 +62,15 @@ class PresensiController extends Controller
      */
     public function show($id)
     {
+       
         $ids        = \Crypt::decrypt($id);
         return view('Presensi.show',[
             'title'         => 'Daftar Absensi Mahasiswa',
             'breadcrumb'    => 'presensi/show',
             'url'           => '/presensi/'.$id,
             'jadwal'        => Jadwal::with(['matakuliah','ruangan','kelas','dosens','hari','presensi'])->where('kode_jadwal',$ids)->first(),
-            'haris'         => Hari::all()
+            'haris'         => Hari::all(),
+            'status'        => StatusPresensi::all()
         ]);
     }
 
@@ -212,6 +215,24 @@ class PresensiController extends Controller
             $presensiSekarang->save();
             //membuat rekap kehadiran untuk presensi untuk pertemuan 1
             RekapKehadiran::insert($data);
+
+            return ResponseFormatter::success(
+                'updated data successfully',
+                200
+            );
+        }catch(\Exception $e){
+            return ResponseFormatter::error([
+                'message' => 'Something went wrong',
+                'error' => $e->getMessage(),
+            ],'updated data failed', 500);
+        }
+    }
+
+    public function updateStatus(Request $request,$id){
+        try{
+            $ids    = \Crypt::decrypt($id);
+          
+            RekapKehadiran::where('id',$ids)->update(['kode_status_presensi'=>$request->status]);
 
             return ResponseFormatter::success(
                 'updated data successfully',

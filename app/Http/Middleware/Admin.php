@@ -22,7 +22,7 @@ class Admin
         if(Auth::guard($guard)->check()) {
             return $next($request);
         }else{
-            dd('ugywewhyuedhi');
+           
             return redirect()->back();
         }
 

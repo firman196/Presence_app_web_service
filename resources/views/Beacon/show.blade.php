@@ -2,7 +2,7 @@
 @section('page-content')
  
  <!-- Header -->
-  <div class="header bg-primary ">
+  <div class="header bg-default ">
     <div class="container-fluid">
       <div class="header-body">
         <div class="row align-items-center py-4">
@@ -80,6 +80,7 @@
                   <th>UUID</th>
                   <th>MAJOR</th>
                   <th>MINOR</th>
+                  <th>Jarak Maksimal</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -320,7 +321,11 @@
                                     {
                                         data: 'minor',
                                         "className": "text-center"                                        
-                                    },                             
+                                    }, 
+                                    {
+                                        data: 'jarak_maksimal',
+                                        "className": "text-center"                                        
+                                    },                               
                                     {
                                         data: 'action',
                                         "className": "text-center",

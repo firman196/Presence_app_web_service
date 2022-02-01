@@ -537,12 +537,12 @@ class DataTableController extends Controller
                     }
                     return $jam_presensi;
                 })
-              /*  ->addColumn('action', function($row){
+               ->addColumn('action', function($row){
                     $ids = \Crypt::encrypt($row->id);
-                    $btn = '<button type="button" class="edit-presensi btn btn-sm btn-default" data-id="'.$ids.'"> <i class="fas fa-edit"></i> Edit</button>';
+                    $btn = '<button type="button" class="edit btn btn-sm btn-default" data-id="'.$ids.'" data-kode_status_presensi="'.$row->kode_status_presensi.'"> <i class="fas fa-edit"></i> Edit</button>';
                     return $btn;
                 })
-                ->rawColumns(['action'])*/
+                ->rawColumns(['action'])
                 ->escapeColumns()
                 ->toJson();
         }
