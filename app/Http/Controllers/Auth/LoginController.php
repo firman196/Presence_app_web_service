@@ -77,7 +77,12 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        $this->guard('admin')->logout();
+        if(Auth::guard('admin')->check()){
+            $this->guard('admin')->logout();
+        }elseif(Auth::guard('dosen')->check()){
+            $this->guard('dosen')->logout();
+        }
+
         session()->flush();
         return $this->loggedOut($request) ?: redirect(route('login'));
     }

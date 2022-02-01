@@ -35,14 +35,12 @@ use App\Http\Controllers\Backend\BeritaAcaraController;
 */
 
 
+Route::get('/', function () {
+    return view('dashboard');
+});
 Auth::routes();
-Route::group(['middleware' => ['presensiAkses:admin'] ], function() {
+Route::group(['middleware' => 'admin:admin'], function () {
     //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    
-    Route::get('/', function () {
-        return view('dashboard');
-    });
-
     Route::prefix('mahasiswa')->group(function () {
         Route::get('/',[MahasiswaController::class, 'index'])->name('mahasiswa.index');
         Route::post('/store',[MahasiswaController::class, 'store'])->name('mahasiswa.store');
@@ -123,15 +121,16 @@ Route::group(['middleware' => ['presensiAkses:admin'] ], function() {
 });
 
 
-Route::prefix('jadwal')->group(function () {
-    Route::get('/',[JadwalController::class, 'index'])->name('jadwal.index');
-    Route::post('/store',[JadwalController::class, 'store'])->name('jadwal.store');
-    Route::put('/update/{id}',[JadwalController::class, 'update'])->name('jadwal.update');
-    Route::delete('/delete/{id}',[JadwalController::class, 'destroy'])->name('jadwal.delete');
-    
-});
 
-Route::group(['middleware' => ['presensiAkses:dosen','auth:admin'] ], function() {   
+
+Route::group(['middleware' => ['dosen:dosen','dosen:admin'] ], function() {   
+    Route::prefix('jadwal')->group(function () {
+        Route::get('/',[JadwalController::class, 'index'])->name('jadwal.index');
+        Route::post('/store',[JadwalController::class, 'store'])->name('jadwal.store');
+        Route::put('/update/{id}',[JadwalController::class, 'update'])->name('jadwal.update');
+        Route::delete('/delete/{id}',[JadwalController::class, 'destroy'])->name('jadwal.delete');
+        
+    });
     //presensi
     Route::resource('presensi', PresensiController::class);
     Route::put('generate/presensi/{id}', [PresensiController::class,'generate']);

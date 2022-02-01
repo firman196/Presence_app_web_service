@@ -30,6 +30,9 @@ class JadwalResource extends JsonResource
             'jam_selesai'       => $this->whenLoaded('jadwal',function(){
                 return $this->jadwal->jam_selesai;
             }),
+            'hari_id'           => $this->whenLoaded('jadwal',function(){
+                return $this->jadwal->hari->id;
+            }),
             'hari'              => $this->whenLoaded('jadwal',function(){
                 return $this->jadwal->hari->nama_hari;
             }),

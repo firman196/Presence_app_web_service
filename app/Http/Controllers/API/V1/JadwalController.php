@@ -64,7 +64,6 @@ class JadwalController extends Controller
             'status'    =>'success',
             'message'   => 'get data jadwal successfully'   
         ]]);
-      
     }
 
     public function getJadwalById($id){
@@ -83,7 +82,6 @@ class JadwalController extends Controller
                 404
             );
         }
-       
     }
 
 

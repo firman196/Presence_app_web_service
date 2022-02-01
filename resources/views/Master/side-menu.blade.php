@@ -185,10 +185,19 @@
               <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <div class="media align-items-center">
                   <span class="avatar avatar-sm rounded-circle">
-                    <img alt="Image placeholder" src="{{ config('services.image.baseUrl').config('services.image.path').'/'.Auth::user()->foto }}">
+                    @if(Auth::guard('admin')->check())
+                      <img alt="Image placeholder" src="{{ config('services.image.baseUrl').config('services.image.path').'/'.Auth::guard('admin')->user()->foto }}">
+                    @elseif(Auth::guard('dosen')->check())
+                      <img alt="Image placeholder" src="{{ config('services.image.baseUrl').config('services.image.path').'/'.Auth::guard('dosen')->user()->foto }}">
+                    @endif
                   </span>
                   <div class="media-body  ml-2  d-none d-lg-block">
-                    <span class="mb-0 text-sm  font-weight-bold">{{ Auth::user()->nama }}</span>
+                    @if(Auth::guard('admin')->check())
+                      <span class="mb-0 text-sm  font-weight-bold">{{ Auth::guard('admin')->user()->nama }}</span>
+                    @elseif(Auth::guard('dosen')->check())
+                      <span class="mb-0 text-sm  font-weight-bold">{{ Auth::guard('dosen')->user()->nama }}</span>
+                    @endif
+                    
                   </div>
                 </div>
               </a>

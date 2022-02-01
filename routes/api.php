@@ -39,4 +39,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 
    //post presensi
    Route::post('presensi',[PresensiController::class,'postPresensi']);
+
+   //logout
+   Route::post('logout', [AuthController::class, 'logout']);
 });

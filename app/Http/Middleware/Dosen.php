@@ -6,8 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-
-class PresensiAkses
+class Dosen
 {
     /**
      * Handle an incoming request.
@@ -18,12 +17,10 @@ class PresensiAkses
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::guard("admin")->check()) {
-            return $next($request);
-        }elseif(Auth::guard("dosen")->check()){
+        if(Auth::guard("dosen")->check()) {
             return $next($request);
         }else{
-            return route('login');
+            return redirect()->back();
         }
     }
 }
