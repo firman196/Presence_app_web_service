@@ -15,12 +15,13 @@ class Dosen
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next, ...$guards)
     {
-        if(Auth::guard("dosen")->check()) {
+        $guard = "dosen";
+        if(Auth::guard($guard)->check()) {
             return $next($request);
         }else{
-            return redirect()->back();
+            return redirect('login');
         }
     }
 }

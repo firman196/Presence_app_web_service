@@ -162,12 +162,11 @@
                 </div>
                
                 <div class="form-group row">
-                   
                     <div class="col-md-6">
                       <label for="status" class="form-control-label">Status</label>
                       <select name="status" id="status" class="form-control">
-                        <option value="0">Aktif</option>
-                        <option value="1">Non Aktif</option>
+                        <option value="0">Non Aktif</option>
+                        <option value="1">Aktif</option>
                       </select>
                       <span><small class="text-danger status-error" id="status-error"></small></span>
                     </div>
@@ -230,7 +229,7 @@
                                   processData: false,
                                   contentType: false,
                                   data: new FormData(form[0]),
-                                  url: "{{ route('dosen.store') }}",
+                                  url: "{{ route('dosens.store') }}",
                                   enctype: 'multipart/form-data',
                                   headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                                   success : function(data){
@@ -303,7 +302,7 @@
                                 processData: false,
                                 contentType: false,
                                 data: new FormData(form[0]),
-                                url: "{{ url('dosen/update') }}/"+id,
+                                url: "{{ url('dosens/update') }}/"+id,
                                 enctype: 'multipart/form-data',
                                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                                 success : function(data){
@@ -342,7 +341,7 @@
                           }).then((result)=>{
                             if (result.value == true) {
                               $.ajax({
-                                    url:"{{ url('dosen/delete') }}/"+id,
+                                    url:"{{ url('dosens/delete') }}/"+id,
                                     data:{
                                       "_token": "{{ csrf_token() }}"
                                     },
@@ -389,7 +388,7 @@
                                     }
                                 },
                                 ajax: {
-                                    url:"{{route('dosen.datatable')}}",
+                                    url:"{{route('dosens.datatable')}}",
                                     type: "GET"
                                 },
                                 

@@ -122,12 +122,72 @@
     </div>
     
 
+    
     <!-- modal -->
-    <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal fade" id="Modal-setting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="modal-label"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+         
+          <form id="form-setting" action="#" method="POST" enctype="multipart/form-data">
+            {{ csrf_field() }}
+            <input type="hidden"  name="kode_jadwal" value="{{ $jadwal->kode_jadwal }}">
+            <div class="modal-body">
+              <div class="form-group row">
+                <div class="col-md-6">
+                  <label for="hari" class="form-control-label">Hari <span style="color: red">*</span></label>
+                  <select name="hari_id" id="hari" class="form-control">
+                    @foreach ($haris as $hari)
+                      <option value="{{ $hari->id }}">{{ $hari->nama_hari }}</option> 
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-md-6">
+                  <label for="jam_presensi_dibuka" class="form-control-label">Jam Presensi Dibuka <span style="color: red">*</span></label>
+                  <input id="jam_presensi_dibuka" name="jam_presensi_dibuka" type="time" placeholder="masukkan jam mulai" class="form-control">
+                  <span><small class="text-danger jam-presensi-dibuka-error" id="jam-presensi-dibuka-error"></small></span>
+                </div>
+                <div class="col-md-6">
+                  <label for="jam_presensi_ditutup" class="form-control-label">Jam Presensi Ditutup <span style="color: red">*</span></label>
+                  <input id="jam_presensi_ditutup" name="jam_presensi_ditutup" type="time" placeholder="masukkan jam selesai" class="form-control">
+                  <span><small class="text-danger jam-presensi-ditutup-error" id="jam-presensi-ditutup-error"></small></span>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-md-6">
+                  <label for="toleransi_keterlambatan" class="form-control-label">Toleransi Keterlambatan <span style="color: red">*</span></label>
+                  <div class="input-group">
+                    <input id="toleransi_keterlambatan" name="toleransi_keterlambatan" type="number" placeholder="toleransi keterlambatan" class="form-control">
+                    <div class="input-group-append">
+                      <span class="input-group-text" id="basic-addon2">menit</span>
+                    </div>
+                  </div>
+                  <span><small class="text-danger toleransi-keterlambatan-error" id="toleransi-keterlambatan-error"></small></span>
+                </div>
+              </div>
+
+                                       
+              <div class="text-right">
+                  <a href="#"id="submit-setting" class="submit-data btn btn-primary">Aktifkan</a>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- modal -->
+    <div class="modal fade" id="Modal-edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-edit-label"></h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -177,11 +237,17 @@
 
                         $('.collapse').on('shown.bs.collapse', function (e) {
                            var id = $(this).parent().find('#presensi-id').val();
+                          // $('#dataTable_wrapper').remove();
+                          $(this).parent().find('#dataTable_length').remove();
+                          $(this).parent().find('#dataTable_filter').remove();
+                          $(this).parent().find('.dataTables_info').remove();
+                          $(this).parent().find('#dataTable_paginate').remove();
+
                            var dataTable = $(this).parent().find('#dataTable');
                            fetch_data(id, dataTable);
 
                            $(this).parent().find('.generate-pertemuan').on('click',function(){
-                             $('#Modal').modal();
+                             $('#Modal-setting').modal();
                              $('.modal-title').html('Aktifkan Presensi')
                              var id = $(this).data('id');
                              var hari = $(this).data('hari_id');
@@ -193,14 +259,14 @@
                              $('#jam_presensi_dibuka').val(jam_dibuka);
                              $('#jam_presensi_ditutup').val(jam_ditutup);
                              $('#toleransi_keterlambatan').val(toleransi)
-                             $('#submit-data').on('click',function(e){
+                             $('#submit-setting').on('click',function(e){
                                 $.ajax({
                                   type: 'PUT',
-                                  data: $("#form-data").serialize(),
+                                  data: $("#form-setting").serialize(),
                                   url: "{{ url('presensi') }}/"+id,
                                   success : function(data){
                                       if(JSON.parse(data.meta.code) == 200){
-                                          $('#Modal').modal('hide');
+                                          $('#Modal-setting').modal('hide');
                                           swal.fire("Selesai","Presensi berhasil diaktifkan","success").then((val)=>{
                                             location.reload();
                                           });
@@ -220,9 +286,9 @@
                            });                         
                       });
                       
-
+/*
                       $('#tambah').on('click',function(e){
-                          $('#Modal').modal();
+                          $('#Modal-edit').modal();
                           $('#modal-label').html('Tambah Data Beacon');
                           $('#submit-data').html('Simpan');
                           reset_model_value()
@@ -234,7 +300,7 @@
                                   url: "{{ route('beacon.store') }}",
                                   success : function(data){
                                     if(JSON.parse(data.meta.code) == 200){
-                                        $('#Modal').modal('hide');
+                                        $('#Modal-edit').modal('hide');
                                         swal.fire("Selesai","Beacon berhasil ditambahkan","success").then((val)=>{
                                           location.reload();
                                         });
@@ -252,10 +318,10 @@
                             });
                         })                               
                       });
-
+*/
                       $('#dataTable tbody').on('click', '.edit', function () {
-                          $('#Modal').modal();
-                          $('#modal-label').html('Edit Status Presensi Mahasiswa');
+                          $('#Modal-edit').modal();
+                          $('#modal-edit-label').html('Edit Status Presensi Mahasiswa');
                           $('#submit-data').html('Simpan');
                           reset_model_value()
                          
@@ -272,7 +338,7 @@
                                 url: "{{ url('status/presensi') }}/"+id,
                                 success : function(data){
                                   if(JSON.parse(data.meta.code) == 200){
-                                        $('#Modal').modal('hide');
+                                        $('#Modal-edit').modal('hide');
                                         swal.fire("Selesai","Status Kehadiran berhasil diupdate","success").then((val)=>{
                                           location.reload();
                                         });

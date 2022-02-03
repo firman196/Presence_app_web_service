@@ -23,8 +23,8 @@ class JadwalController extends Controller
 
        // $presensi   = 
         $jadwals    = RekapKehadiran::with(['jadwal','jadwal.matakuliah','jadwal.ruangan','jadwal.kelas','jadwal.dosens','jadwal.hari','presensi'])->where('nim',$nim)->whereHas('presensi',function($q) use ($hari){
-            $q->where('status','aktif')->where('hari_id',$hari->id??'');;
-        });
+            $q->where('status','aktif')->where('hari_id',$hari->id??'');
+        })->where('status','default');
 
         return JadwalResource::collection($jadwals->paginate(10))->additional(['meta' => [
             'code'      =>200,
@@ -54,7 +54,7 @@ class JadwalController extends Controller
     public function getHistoryJadwal(Request $request){
         $nim        = auth()->user()->nim;
         $jadwals    = RekapKehadiran::with(['jadwal','jadwal.matakuliah','jadwal.ruangan','jadwal.kelas','jadwal.dosens','jadwal.hari','presensi'])->where('nim',$nim)->where('status','!=','default')->whereHas('presensi',function($q){
-            $q->where('status','nonaktif')->orderBy('pertemuan_ke','desc');
+            $q/*->where('status','nonaktif')*/->orderBy('pertemuan_ke','desc');
         })->whereHas('jadwal',function($q){
             $q->where('status','aktif');
         });

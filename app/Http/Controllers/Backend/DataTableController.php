@@ -16,6 +16,7 @@ use App\Models\Krs;
 use App\Models\Admin;
 use App\Models\presensi;
 use App\Models\RekapKehadiran;
+use Illuminate\Support\Facades\Auth;
 
 class DataTableController extends Controller
 {
@@ -279,7 +280,12 @@ class DataTableController extends Controller
     public function jadwal(Request $request)
     {
         if ($request->ajax()) {
-            $datas = Jadwal::with(['matakuliah','ruangan','kelas','dosens','hari'])->get();
+
+            if(Auth::guard('admin')->check()){
+                $datas = Jadwal::with(['matakuliah','ruangan','kelas','dosens','hari'])->get();
+            }else{
+                $datas = Jadwal::with(['matakuliah','ruangan','kelas','dosens','hari'])->where('dosen',Auth::guard('admin')->user()->nik)->get();
+            }
            
             return DataTables::of($datas)
                 ->addIndexColumn()

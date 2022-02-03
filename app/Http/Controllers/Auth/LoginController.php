@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Http\Requests\AuthLoginRequest;
 use Illuminate\Http\Request;
 use App\Models\Admin;
+use App\Models\Dosen;
 
 
 use Illuminate\Support\Facades\Auth;
@@ -42,7 +43,9 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-       // $this->middleware('auth')->except('logout');
+        
+       // $this->middleware('dosen:dosen')->except('logout');
+        //$this->middleware('admin:admin')->except('logout');
     }
 
     public function showLoginForm()
@@ -53,11 +56,20 @@ class LoginController extends Controller
     public function login(AuthLoginRequest $request)
     {
        
-        $user   = Admin::where('nip',$request->username)->first();
+       /* if(auth()->guard('admin')->check()){
+            $user   = Admin::where('nip',$request->username)->first();
        
-        if(!isset($user)){
-            return redirect()->route('login')->with(['error' => 'Username/Password salah!']);
-        }
+            if(!isset($user)){
+                return redirect()->route('login')->with(['error' => 'Username/Password salah!']);
+            }
+        }else{
+            $user   = Dosen::where('nip',$request->username)->first();
+       
+            if(!isset($user)){
+                return redirect()->route('login')->with(['error' => 'Username/Password salah!']);
+            }
+        }*/
+       
        
         $credentials = [
             'nip'       => $request->username,
@@ -65,13 +77,13 @@ class LoginController extends Controller
             'status'    => '1'
         ];
 
-    
-        if(auth()->guard('admin')->attempt($credentials)){
-            return redirect()->intended('/');
-        }elseif(auth()->guard('dosen')->attempt($credentials)){
-            return redirect()->intended('/');
+        
+        if(Auth::guard('admin')->attempt($credentials)){
+            return redirect()->intended('/dashboard');
+        }elseif(Auth::guard('dosen')->attempt($credentials)){
+            return redirect()->intended('/dosen');           
         }else {
-           // return $credentials;
+            
             return redirect()
                 ->intended('login')
                 ->withInput()

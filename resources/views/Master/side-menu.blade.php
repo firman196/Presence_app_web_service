@@ -21,16 +21,17 @@
         <!-- Collapse -->
         <div class="collapse navbar-collapse" id="sidenav-collapse-main">
           <!-- Nav items -->
+          @if(Auth::guard('admin')->check())
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="{{ url('/') }}">
                 <i class="ni ni-chart-pie-35 text-red"></i>
                 <span class="nav-link-text">Dashboard</span>
               </a>
             </li>
-            @if(Auth::guard('admin')->check())
+          
             <li class="nav-item">
-              <a class="nav-link {{ Route::is('mahasiswa.index') || Route::is('dosen.index') ? 'active' : '' }}" href="#navbar-dashboards" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-dashboards">
+              <a class="nav-link {{ Route::is('mahasiswa.index') || Route::is('dosens.index') ? 'active' : '' }}" href="#navbar-dashboards" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-dashboards">
                 <i class="ni ni-archive-2 text-red"></i>
                 <span class="nav-link-text">Master Data</span>
               </a>
@@ -43,7 +44,7 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="{{ route('dosen.index') }}" class="nav-link">
+                    <a href="{{ route('dosens.index') }}" class="nav-link">
                       <span class="sidenav-mini-icon"> D </span>
                       <span class="sidenav-normal"> Dosen </span>
                     </a>
@@ -78,12 +79,7 @@
                       <span class="sidenav-normal"> Matakuliah </span>
                     </a>
                   </li>
-                  <li class="nav-item">
-                    <a href="{{ route('jadwal.index') }}" class="nav-link">
-                      <span class="sidenav-mini-icon"> J </span>
-                      <span class="sidenav-normal"> Jadwal </span>
-                    </a>
-                  </li>
+                 
                   <li class="nav-item">
                     <a href="{{ route('jenis-izin.index') }}" class="nav-link">
                       <span class="sidenav-mini-icon"> J </span>
@@ -115,6 +111,12 @@
               </a>
             </li>
             <li class="nav-item">
+              <a href="{{ route('jadwal.index') }}" class="nav-link">
+                <i class="ni ni-calendar-grid-58 text-red"></i>
+                <span class="sidenav-normal"> Jadwal </span>
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link {{ Route::is('presensi.index') ? 'active' : '' }}" href="{{ route('presensi.index') }}">
                 <i class="ni ni-badge text-red"></i>
                 <span class="nav-link-text">Data Presensi</span>
@@ -136,8 +138,14 @@
           </h6>
           <ul class="navbar-nav mb-md-3">
             <li class="nav-item">
+              <a class="nav-link" href="{{ url('/') }}">
+                <i class="ni ni-chart-pie-35 text-red"></i>
+                <span class="nav-link-text">Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item">
               <a href="{{ route('jadwal.index') }}" class="nav-link">
-                <span class="sidenav-mini-icon"> J </span>
+               <i class="ni ni-calendar-grid-58 text-red"></i>
                 <span class="sidenav-normal"> Jadwal Saya </span>
               </a>
             </li>

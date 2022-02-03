@@ -84,6 +84,12 @@ class JadwalResource extends JsonResource
             'hari_presensi' => $this->whenLoaded('presensi',function(){
                 return $this->presensi->hari->nama_hari;
             }),
+            'jam_presensi_dibuka'         => $this->whenLoaded('presensi',function(){
+                return \App\Helpers\GeneralHelper::format_time_2digit($this->presensi->jam_presensi_dibuka);
+            }),
+            'jam_presensi_ditutup'         => $this->whenLoaded('presensi',function(){
+                return \App\Helpers\GeneralHelper::format_time_2digit($this->presensi->jam_presensi_ditutup);
+            }),
             'pertemuan_ke'=> $this->whenLoaded('jadwal',function(){
                 return $this->jadwal->pertemuan_ke;
             }),
@@ -92,7 +98,7 @@ class JadwalResource extends JsonResource
             }),
             'status_presensi'=>($this->status)?$this->status:null,
             'tanggal_pertemuan' => $this->whenLoaded('presensi',function(){
-                return \App\Helpers\GeneralHelper::tgl_indo($this->presensi->tanggal_pertemuan);
+                return \App\Helpers\GeneralHelper::tgl_indo(date('Y-m-d',strtotime($this->presensi->tanggal_pertemuan)));
             }),
             'total_mahasiswa_hadir' => $this->whenLoaded('presensi',function(){
                 return $this->presensi->total_mahasiswa_hadir;

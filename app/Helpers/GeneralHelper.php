@@ -29,5 +29,11 @@ class GeneralHelper{
     }
   }
 
+
+  public static function presentase_kehadiran($total_hadir,$total_pertemuan){
+    $persen = ($total_hadir/$total_pertemuan)*100;
+    return $persen;
+  }
+
 }
 ?>

@@ -2,18 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class Dosen extends Model
+class Dosen  extends Authenticatable
 {
-    use HasFactory;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $guard = 'dosen';
     protected $table = 'dosens';
     protected $primaryKey = 'nik';
     protected $fillable = [
-        'nik',        
+        //'nik',        
         'nip',       
         'nama',    
         'kode_prodi',
@@ -23,7 +26,8 @@ class Dosen extends Model
         'foto',
         'telp',        
         'email',
-        'status',   
+        'status',  
+        'password', 
     ];
 
     /**
