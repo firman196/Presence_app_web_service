@@ -13,7 +13,8 @@ use App\Models\RekapKehadiran;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Requests\BeritaAcaraUpdateRequest;
-
+use DB;
+use PDF;
 
 class BeritaAcaraController extends Controller
 {
@@ -92,6 +93,7 @@ class BeritaAcaraController extends Controller
      */
     public function update(BeritaAcaraUpdateRequest $request, $id)
     {
+        DB::beginTransaction();  
         try{
             $ids                    = \Crypt::decrypt($id);
             $validated              = $request->validated();
@@ -132,11 +134,13 @@ class BeritaAcaraController extends Controller
             //mengupdate presensi di jadwal
             Jadwal::where('kode_jadwal',$presensiSekarang->kode_jadwal)->update(['pertemuan_ke'=>$pertemuanSekarang]);
 
+            DB::commit();
             return ResponseFormatter::success(
                 'updated data successfully',
                 200
             );
         }catch(\Exception $e){
+            DB::rollback();
             return ResponseFormatter::error([
                 'message' => 'Something went wrong',
                 'error' => $e->getMessage(),
@@ -154,4 +158,15 @@ class BeritaAcaraController extends Controller
     {
         //
     }
+
+    public function cetakBeritaAcara($id){
+        $ids            = \Crypt::decrypt($id);
+        $jadwal         = Jadwal::with(['matakuliah','ruangan','kelas','dosens','hari','presensi'])->where('kode_jadwal',$ids)->first();
+        $beritaAcaras   = Presensi::with(['hari'])->where('kode_jadwal',$ids)->get();
+
+        $pdf= PDF::loadview('BeritaAcara/cetakBeritaAcara',['beritaAcaras'=>(isset($beritaAcaras))? $beritaAcaras:null, 'jadwal'=>(isset($jadwal))?$jadwal:null]);
+        $pdf->setPaper('A4','landscape');
+        return $pdf->stream('Cetak_Berita_Acara.pdf');
+    }
+
 }

@@ -38,7 +38,10 @@ use App\Http\Controllers\Backend\BeritaAcaraController;
 
 Auth::routes();
 Route::group(['middleware' => ['admin:admin'] ], function() {
-    
+    Route::prefix('profil')->group(function(){
+        Route::get('/',[AdminController::class, 'indexPassword'])->name('admin.index.password');
+        Route::patch('reset-password',[AdminController::class, 'updatePassword'])->name('admin.update.password');
+    });
     //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::prefix('mahasiswa')->group(function () {
         Route::get('/',[MahasiswaController::class, 'index'])->name('mahasiswa.index');
@@ -116,17 +119,37 @@ Route::group(['middleware' => ['admin:admin'] ], function() {
        
     });
    
-    Route::get('/dashboard', function () {
+    Route::get('/', function () {
         return view('dashboard');
     });
+
+    Route::prefix('jadwal')->group(function () {
+        Route::get('/',[JadwalController::class, 'index'])->name('jadwal.index');
+        Route::post('/store',[JadwalController::class, 'store'])->name('jadwal.store');
+        Route::put('/update/{id}',[JadwalController::class, 'update'])->name('jadwal.update');
+        Route::delete('/delete/{id}',[JadwalController::class, 'destroy'])->name('jadwal.delete');
+        
+    });
+    //presensi
+    Route::resource('presensi', PresensiController::class);
+    Route::put('generate/presensi/{id}', [PresensiController::class,'generate']);
+    Route::put('status/presensi/{id}', [PresensiController::class,'updateStatus']);
+    Route::get('cetak/presensi/{id}',[PresensiController::class,'cetakPresensi'])->name('presensi.cetak');
+    //berita acara
+    Route::resource('beritaacara', BeritaAcaraController::class);
+    Route::get('cetak/beritaacara/{id}',[BeritaAcaraController::class,'cetakBeritaAcara'])->name('beritaacara.cetak');
 });
 
 
-Route::prefix('dosen')->group(function () {
+Route::prefix('dosen')->name('dosen.')->group(function () {
     Route::group(['middleware' => ['dosen:dosen'] ], function() {  
         
         Route::get('/', function () {
             return view('dashboard');
+        });
+        Route::prefix('profil')->group(function(){
+            Route::get('/',[AdminController::class, 'indexPassword'])->name('index.password');
+            Route::patch('reset-password',[AdminController::class, 'updatePassword'])->name('update.password');
         });
         Route::prefix('jadwal')->group(function () {
             Route::get('/',[JadwalController::class, 'index'])->name('jadwal.index');
@@ -135,11 +158,18 @@ Route::prefix('dosen')->group(function () {
             Route::delete('/delete/{id}',[JadwalController::class, 'destroy'])->name('jadwal.delete');
             
         });
+        Route::prefix('data')->group(function(){
+            Route::get('/jadwal',[DataTableController::class, 'jadwal'])->name('data.jadwal');
+            Route::get('/presensi',[DataTableController::class, 'presensi'])->name('data.presensi');
+            Route::get('/rekap-kehadiran',[DataTableController::class, 'rekapKehadiran'])->name('data.rekap-kehadiran');
+        });
         //presensi
         Route::resource('presensi', PresensiController::class);
         Route::put('generate/presensi/{id}', [PresensiController::class,'generate']);
         Route::put('status/presensi/{id}', [PresensiController::class,'updateStatus']);
+        Route::get('cetak/presensi/{id}',[PresensiController::class,'cetakPresensi'])->name('presensi.cetak');
         //berita acara
         Route::resource('beritaacara', BeritaAcaraController::class);
+        Route::get('cetak/beritaacara/{id}',[BeritaAcaraController::class,'cetakBeritaAcara'])->name('beritaacara.cetak');
     });
 });

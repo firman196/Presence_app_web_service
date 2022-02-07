@@ -39,7 +39,6 @@
                   <th>KODE PRODI</th>
                   <th>NAMA PRODI</th>
                   <th>JENJANG</th>
-                  <th>KAPRODI</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -90,17 +89,7 @@
                     <span><small class="text-danger jenjang-error" id="jenjang-error"></small></span>
                   </div>
                 </div>
-                <div class="form-group row">
-                  <div class="col-md-12">
-                    <label for="kaprodi" class="form-control-label">Kepala Prodi</label>
-                    <select name="kaprodi" id="kaprodi" class="form-control">
-                      @foreach ($dosens as $dosen)
-                        <option value="{{ $dosen->nik }}">{{ $dosen->nama }}</option>
-                      @endforeach
-                    </select>
-                    <span><small class="text-danger kaprodi-error" id="kaprodi-error"></small></span>
-                  </div>
-                </div>
+               
                 <div class="text-center">
                     <a href="#"id="submit-data" class="submit-data btn btn-primary w-100">Simpan</a>
                 </div>
@@ -170,13 +159,11 @@
                           var id                = $(this).data('id');
                           var nama_prodi        = $(this).data('nama_prodi');
                           var jenjang           = $(this).data('jenjang');
-                          var kaprodi           = $(this).data('kaprodi');
                         
                           $('#kode-prodi').val(id);
                           $('#nama-prodi').val(nama_prodi);
                           $('#jenjang  option[value="'+jenjang+'"]').prop("selected", true);
-                          $('#kaprodi  option[value="'+kaprodi+'"]').prop("selected", true);
-                        
+                      
                           $('#submit-data').on('click',function(e){
                             reset_error()
                             $.ajax({
@@ -288,11 +275,7 @@
                                     {
                                         data: 'jenjang',
                                         "className": "text-center"                                        
-                                    },  
-                                    {
-                                        data: 'kaprodi',
-                                        "className": "text-center"                                        
-                                    },                                   
+                                    },                                  
                                     {
                                         data: 'action',
                                         "className": "text-center",
@@ -310,7 +293,6 @@
                         $( '#kode-prodi-error' ).html('');
                         $( '#nama-prodi-error' ).html('');
                         $( '#jenjang-error' ).html('');
-                        $( '#kaprodi-error' ).html('');
                     }
 
                     function reset_model_value(){
@@ -332,13 +314,7 @@
 
                         if(datas.jenjang){
                             $( '#jenjang-error' ).html( datas.jenjang[0] );
-                        }
-
-                        if(datas.kaprodi){
-                            $( '#kaprodi-error' ).html( datas.kaprodi[0] );
-                        }
-                        
-                                    
+                        }             
                      }  
             });
 

@@ -15,18 +15,17 @@ class CreatePresensisTable extends Migration
     {
         Schema::create('presensis', function (Blueprint $table) {
             $table->id();
-         //   $table->bigInteger('krs_id');
             $table->string('kode_jadwal',10);
             $table->integer('pertemuan_ke')->default(1);
-            $table->bigInteger('hari_id');
+            $table->bigInteger('hari_id')->unsigned();
             $table->time('jam_presensi_dibuka')->nullable();
             $table->time('jam_presensi_ditutup')->nullable();
             $table->integer('toleransi_keterlambatan')->nullable();
             $table->enum('status',['aktif','nonaktif'])->default('nonaktif');
             $table->date('tanggal_pertemuan')->nullable();
-            $table->integer('total_mahasiswa_hadir')->nullable();
-            $table->integer('total_mahasiswa_alpha')->nullable();
-            $table->integer('total_mahasiswa_izin')->nullable();
+            $table->integer('total_mahasiswa_hadir')->default(0);
+            $table->integer('total_mahasiswa_alpha')->default(0);
+            $table->integer('total_mahasiswa_izin')->default(0);
             $table->text('materi_perkuliahan')->nullable();
             $table->text('penugasan')->nullable();
             $table->string('media_perkuliahan')->nullable();
@@ -37,20 +36,17 @@ class CreatePresensisTable extends Migration
           //  $table->string('kode_beacon',10);
             $table->timestamps();
 
-           /* //relasi ke tabel status presensi
-            $table->foreign('kode_status_presensi')
-                ->references('kode')
-                ->on('status_presensis')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-            
-            //relasi ke tabel krs
-            $table->foreign('krs_id')
-                ->references('id')
-                ->on('krs')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');*/
 
+        });
+
+        //relasi ke tabel haris
+        Schema::table('presensis', function (Blueprint $table) {
+            $table->foreign('hari_id')->references('id')->on('haris')->onUpdate('cascade')->onDelete('cascade');
+        });
+
+        //relasi ke tabel jadwals
+        Schema::table('presensis', function (Blueprint $table) {
+            $table->foreign('kode_jadwal')->references('kode_jadwal')->on('jadwals')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

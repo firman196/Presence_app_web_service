@@ -38,15 +38,9 @@
               <div class="collapse show" id="navbar-dashboards">
                 <ul class="nav nav-sm flex-column">
                   <li class="nav-item">
-                    <a href="{{ route('mahasiswa.index') }}" class="nav-link  {{ Route::is('mahasiswa.index') ? 'active' : '' }}">
-                      <span class="sidenav-mini-icon"> M </span>
-                      <span class="sidenav-normal"> Mahasiswa </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="{{ route('dosens.index') }}" class="nav-link">
-                      <span class="sidenav-mini-icon"> D </span>
-                      <span class="sidenav-normal"> Dosen </span>
+                    <a href="{{ route('prodi.index') }}" class="nav-link">
+                      <span class="sidenav-mini-icon"> P </span>
+                      <span class="sidenav-normal"> Prodi </span>
                     </a>
                   </li>
                   <li class="nav-item">
@@ -61,12 +55,7 @@
                       <span class="sidenav-normal"> Kelas </span>
                     </a>
                   </li>
-                  <li class="nav-item">
-                    <a href="{{ route('prodi.index') }}" class="nav-link">
-                      <span class="sidenav-mini-icon"> P </span>
-                      <span class="sidenav-normal"> Prodi </span>
-                    </a>
-                  </li>
+                 
                   <li class="nav-item">
                     <a href="{{ route('ruangan.index') }}" class="nav-link">
                       <span class="sidenav-mini-icon"> R </span>
@@ -79,13 +68,13 @@
                       <span class="sidenav-normal"> Matakuliah </span>
                     </a>
                   </li>
-                 
+                 <!--
                   <li class="nav-item">
                     <a href="{{ route('jenis-izin.index') }}" class="nav-link">
                       <span class="sidenav-mini-icon"> J </span>
                       <span class="sidenav-normal"> Jenis Izin </span>
                     </a>
-                  </li>
+                  </li>-->
                   <li class="nav-item">
                     <a href="{{ route('krs.index') }}" class="nav-link">
                       <span class="sidenav-mini-icon"> K </span>
@@ -95,9 +84,21 @@
                 </ul>
               </div>
             </li>
-            
           </ul>
+
           <ul class="navbar-nav mb-md-3">
+            <li class="nav-item">
+              <a href="{{ route('dosens.index') }}" class="nav-link {{ Route::is('dosens.index') ? 'active' : '' }}">
+                <i class="ni ni-circle-08 text-red"></i>
+                <span class="sidenav-normal"> Dosen </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('mahasiswa.index') }}" class="nav-link  {{ Route::is('mahasiswa.index') ? 'active' : '' }}">
+                <i class="ni ni-hat-3 text-red"></i>
+                <span class="sidenav-normal"> Mahasiswa </span>
+              </a>
+            </li>
             <li class="nav-item">
               <a class="nav-link {{ Route::is('beacon.index') ? 'active' : '' }}" href="{{ route('beacon.index') }}">
                 <i class="ni ni-button-power text-red"></i>
@@ -111,7 +112,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{ route('jadwal.index') }}" class="nav-link">
+              <a href="{{ route('jadwal.index') }}" class="nav-link  {{ Route::is('jadwal.index') ? 'active' : '' }}">
                 <i class="ni ni-calendar-grid-58 text-red"></i>
                 <span class="sidenav-normal"> Jadwal </span>
               </a>
@@ -138,32 +139,30 @@
           </h6>
           <ul class="navbar-nav mb-md-3">
             <li class="nav-item">
-              <a class="nav-link" href="{{ url('/') }}">
+              <a class="nav-link" href="{{ url('/dosen') }}">
                 <i class="ni ni-chart-pie-35 text-red"></i>
                 <span class="nav-link-text">Dashboard</span>
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{ route('jadwal.index') }}" class="nav-link">
+              <a href="{{ route('dosen.jadwal.index') }}" class="nav-link {{ Route::is('dosen.jadwal.index') ? 'active' : '' }}">
                <i class="ni ni-calendar-grid-58 text-red"></i>
                 <span class="sidenav-normal"> Jadwal Saya </span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {{ Route::is('presensi.index') ? 'active' : '' }}" href="{{ route('presensi.index') }}">
+              <a class="nav-link {{ Route::is('dosen.presensi.index') ? 'active' : '' }}" href="{{ route('dosen.presensi.index') }}">
                 <i class="ni ni-badge text-red"></i>
                 <span class="nav-link-text">Data Presensi</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {{ Route::is('beritaacara.index') ? 'active' : '' }}" href="{{ route('beritaacara.index') }}">
+              <a class="nav-link {{ Route::is('dosen.beritaacara.index') ? 'active' : '' }}" href="{{ route('dosen.beritaacara.index') }}">
                 <i class="ni ni-book-bookmark text-red"></i>
                 <span class="nav-link-text">Berita Acara</span>
               </a>
             </li>
-           
           </ul>
-
          @endif
         </div>
       </div>
@@ -221,6 +220,18 @@
                 </div>
               
                 <div class="dropdown-divider"></div>
+                @if(Auth::guard('admin')->check())
+                  <a href="{{ route('admin.index.password') }}" class="dropdown-item">
+                    <i class="ni ni-key-25"></i>
+                    <span>Reset Password</span>
+                  </a>
+                @elseif(Auth::guard('dosen')->check())
+                  <a href="{{ route('dosen.index.password') }}" class="dropdown-item">
+                    <i class="ni ni-key-25"></i>
+                    <span>Reset Password</span>
+                  </a>
+                @endif
+                
                 <form action="{{ route('logout') }}" method="POST">
                   @csrf
                   <button type="submit" class="dropdown-item">

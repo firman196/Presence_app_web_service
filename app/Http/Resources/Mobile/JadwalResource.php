@@ -91,7 +91,7 @@ class JadwalResource extends JsonResource
                 return \App\Helpers\GeneralHelper::format_time_2digit($this->presensi->jam_presensi_ditutup);
             }),
             'pertemuan_ke'=> $this->whenLoaded('jadwal',function(){
-                return $this->jadwal->pertemuan_ke;
+                return (isset($this->presensi))?$this->presensi->pertemuan_ke:$this->jadwal->pertemuan_ke;
             }),
             'status_kelas' => $this->whenLoaded('presensi',function(){
                 return (\App\Helpers\GeneralHelper::check_jam_presensi($this->presensi->jam_presensi_dibuka,$this->presensi->jam_presensi_ditutup,$this->presensi->toleransi_keterlambatan))?'Opened':'Closed';

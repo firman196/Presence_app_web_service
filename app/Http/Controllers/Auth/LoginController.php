@@ -43,9 +43,9 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        
-       // $this->middleware('dosen:dosen')->except('logout');
-        //$this->middleware('admin:admin')->except('logout');
+     /* 
+        $this->middleware('dosen:dosen')->except('logout');
+        $this->middleware('admin:admin')->except('logout');*/
     }
 
     public function showLoginForm()
@@ -79,7 +79,7 @@ class LoginController extends Controller
 
         
         if(Auth::guard('admin')->attempt($credentials)){
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/');
         }elseif(Auth::guard('dosen')->attempt($credentials)){
             return redirect()->intended('/dosen');           
         }else {
@@ -102,4 +102,6 @@ class LoginController extends Controller
         session()->flush();
         return $this->loggedOut($request) ?: redirect(route('login'));
     }
+
+    
 }

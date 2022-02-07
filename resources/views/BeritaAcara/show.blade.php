@@ -14,6 +14,7 @@
               </ol>
             </nav>
           </div>
+          
          
         </div>
       </div>
@@ -25,6 +26,7 @@
       <div class="col">
         <div class="card bg-gradient-default">
           <div class="card-body">
+            
             <div class="row">
               <div class="col-md-2 col-sm-12">
                 <h5 class="card-title text-white">Nama Matakuliah</h5>
@@ -69,12 +71,18 @@
           </div>
         </div>
 
-
+        <div class="row pl-3 pr-3">
+          <a href="{{(Auth::guard('dosen')->check())? url('dosen\cetak\beritaacara',\Crypt::encrypt($jadwal->kode_jadwal)):url('cetak\beritaacara',\Crypt::encrypt($jadwal->kode_jadwal)) }}" id="cetak" class="ml-auto mb-4 cetak btn btn-icon btn-success" >
+            <span class="btn-inner--icon"><i class="fas fa-print"></i></span>
+            <span class="btn-inner--text">Cetak</span>
+          </a>
+        </div>
         <div class="card">
           <!-- Card header -->
           <div class="card-header border-0">
             <h3 class="mb-0">{{ $title }}</h3>
           </div>
+          
           <!-- Light table -->
           <div class="table-responsive">
             <table class="table table-bordered align-items-center text-center">
@@ -109,9 +117,9 @@
                       <th></th>
                       <th></th>
                     @endif
-                    <th>{{ $beritaAcara->total_mahasiswa_hadir }}</th>
-                    <th>{{ $beritaAcara->total_mahasiswa_izin }}</th>
-                    <th>{{ ($beritaAcara->total_mahasiswa_hadir != null) ?$beritaAcara->total_mahasiswa_alpha:'' }}</th>
+                    <th>{{ ($beritaAcara->total_mahasiswa_hadir != null) ? $beritaAcara->total_mahasiswa_hadir:'' }}</th>
+                    <th>{{ ($beritaAcara->total_mahasiswa_hadir != null )? $beritaAcara->total_mahasiswa_izin:'' }}</th>
+                    <th>{{ ($beritaAcara->total_mahasiswa_hadir != null) ? $beritaAcara->total_mahasiswa_alpha:'' }}</th>
                     <th>{{ $beritaAcara->materi_perkuliahan }}</th>
                     <th>{{ $beritaAcara->media_perkuliahan }}</th>
                     <th>{{ $beritaAcara->catatan_perkuliahan }}</th>
@@ -233,7 +241,7 @@
                                 $.ajax({
                                   type: 'PUT',
                                   data: $("#form-data").serialize(),
-                                  url: "{{ url('presensi') }}/"+id,
+                                  url: "{{(Auth::guard('dosen')->check())? url('dosen/presensi'):url('presensi') }}/"+id,
                                   success : function(data){
                                       if(JSON.parse(data.meta.code) == 200){
                                           $('#Modal').modal('hide');
@@ -269,7 +277,7 @@
                             $.ajax({
                                   type: 'PUT',
                                   data: $("#form-data").serialize(),
-                                  url: "{{ url('beritaacara')}}/"+id,
+                                  url: "{{(Auth::guard('dosen')->check())? url('dosen/beritaacara'):url('beritaacara') }}/"+id,
                                   success : function(data){
                                     console.log(data);
                                     if(JSON.parse(data.meta.code) == 200){

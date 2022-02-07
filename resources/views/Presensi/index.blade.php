@@ -96,7 +96,7 @@
                                     }
                                 },
                                 ajax: {
-                                    url:"{{route('data.jadwal')}}",
+                                    url:"{{(Auth::guard('dosen')->check())? route('dosen.data.jadwal'):route('data.jadwal')}}",
                                     type: "GET"
                                 },
                                 
@@ -167,7 +167,7 @@
                                     hari_id     : hari_id,
                                     jam_mulai   : jam_mulai
                                   },
-                                  url: "{{ url('generate/presensi') }}/"+id,
+                                  url: "{{(Auth::guard('dosen')->check())? url('dosen/generate/presensi'):url('generate/presensi')}}/"+id,
                                   success : function(data){
                                   
                                       if(JSON.parse(data.meta.code) == 200){
@@ -220,9 +220,8 @@
                               $.ajax({
                                   type: 'PUT',
                                   data: $("#form-data").serialize(),
-                                  url: "{{ url('presensi') }}/"+id,
+                                  url: "{{(Auth::guard('dosen')->check())? url('dosen/presensi'):url('presensi')}}/"+id,
                                   success : function(data){
-                                    console.log(data)
                                       if(JSON.parse(data.meta.code) == 200){
                                           $('#Modal').modal('hide');
                                           swal.fire("Selesai","Presensi berhasil diupdate","success").then((val)=>{

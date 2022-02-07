@@ -12,6 +12,8 @@ use App\Models\RekapKehadiran;
 use App\Models\StatusPresensi;
 use App\Helpers\ResponseFormatter;
 use App\Http\Requests\PresensiUpdateRequest;
+use DB;
+use PDF;
 
 class PresensiController extends Controller
 {
@@ -22,9 +24,6 @@ class PresensiController extends Controller
      */
     public function index()
     {
-       //$kelass         = Kelas::all();
-       // $ruangs         = Ruangan::all();
-
         return view('Presensi.index',[
             'title'         => 'Jadwal Matakuliah Anda',
             'breadcrumb'    => 'presensi',
@@ -62,7 +61,6 @@ class PresensiController extends Controller
      */
     public function show($id)
     {
-       
         $ids        = \Crypt::decrypt($id);
         return view('Presensi.show',[
             'title'         => 'Daftar Absensi Mahasiswa',
@@ -97,27 +95,8 @@ class PresensiController extends Controller
         try{
             $ids                    = \Crypt::decrypt($id);
             $validated              = $request->validated();
-           // $validated['status']    = 'aktif';
-           
-          
-            //generate data krs mahasiswa ke tabel rekap kehadiran
-           /* $data_krs = Krs::where('kode_jadwal',$request->kode_jadwal)->get();
-            $data = array();
-            foreach($data_krs as $krs){
-                $datas    = [
-                    'presensi_id'           => $ids,
-                    'nim'                   => $krs->nim,
-                    'kode_status_presensi'  => 'A'
-                ];
-                $data[] = $datas;
-            }*/
- 
-           // $validated['total_mahasiswa_alpha'] = $data_krs->count();
-            //update status presensi
+         
             Presensi::where('id',$ids)->update($validated);
-
-            //generate rekap kehadiran
-           // RekapKehadiran::insert($data);
             return ResponseFormatter::success(
                 'updated data successfully',
                 200
@@ -169,8 +148,8 @@ class PresensiController extends Controller
      */
     public function generate(Request $request, $id)
     {
+        DB::beginTransaction();  
         try{
-            
             $ids            = \Crypt::decrypt($id);
             $kode_jadwal    = $request->kode_jadwal;
             $hari_id        = $request->hari_id;
@@ -178,7 +157,7 @@ class PresensiController extends Controller
             $jam_ditutup    = date('H:i:s', strtotime('+15 minutes', strtotime($jam_mulai)));
 
             //generate 14 pertemuan
-            for ($i = 1 ;$i<=14;$i++){
+            for ($i = 1 ;$i<=16;$i++){
                 $data[] = [
                     'kode_jadwal'               => $kode_jadwal,
                     'pertemuan_ke'              => $i,
@@ -215,12 +194,13 @@ class PresensiController extends Controller
             $presensiSekarang->save();
             //membuat rekap kehadiran untuk presensi untuk pertemuan 1
             RekapKehadiran::insert($data);
-
+            DB::commit();
             return ResponseFormatter::success(
                 'updated data successfully',
                 200
             );
         }catch(\Exception $e){
+            DB::rollback();
             return ResponseFormatter::error([
                 'message' => 'Something went wrong',
                 'error' => $e->getMessage(),
@@ -244,6 +224,17 @@ class PresensiController extends Controller
                 'error' => $e->getMessage(),
             ],'updated data failed', 500);
         }
+    }
+
+
+    public function cetakPresensi($id){
+        $ids        = \Crypt::decrypt($id);
+        $presensi   = Presensi::with(['jadwal','jadwal.dosens','jadwal.kelas','jadwal.matakuliah','hari'])->where('id',$ids)->first();
+        $kehadirans = RekapKehadiran::with(['mahasiswa'])->where('presensi_id',$ids)->get();
+
+        $pdf= PDF::loadview('Presensi/cetak-presensi',['kehadirans'=>(isset($kehadirans))? $kehadirans:null, 'presensi'=>(isset($presensi))?$presensi:null]);
+        $pdf->setPaper('A4','potrait');
+        return $pdf->stream('Cetak_Presensi.pdf');
     }
 
    

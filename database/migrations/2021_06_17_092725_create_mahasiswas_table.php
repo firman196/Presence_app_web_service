@@ -17,7 +17,7 @@ class CreateMahasiswasTable extends Migration
             $table->string('nim',15)->primary();
             $table->string('nama',50);
             $table->string('kode_prodi',10);
-            $table->bigInteger('kelas_id');
+            $table->unsignedBigInteger('kelas_id');
             $table->string('dosen',25);
             $table->string('foto',255)->nullable();
             $table->string('password',255);
@@ -29,26 +29,15 @@ class CreateMahasiswasTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
-          
-         /*   //relasi ke tabel kelas
-            $table->foreign('kelas_id')
-                ->references('id')
-                ->on('kelas')
-                ->onUpdate('cascade');
-
-            //relasi ke tabel dosen
-            $table->foreign('dosen')
-                ->references('nik')
-                ->on('dosens')
-                ->onUpdate('cascade');
-
-            //relasi ke tabel prodi
-            $table->foreign('kode_prodi')
-                ->references('kode_prodi')
-                ->on('prodis')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');*/
         });
+
+        //relasi ke tabel prodi, kelas dan dosen
+        Schema::table('mahasiswas', function (Blueprint $table) {
+            $table->foreign('kode_prodi')->references('kode_prodi')->on('prodis')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('kelas_id')->references('id')->on('kelas')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('dosen')->references('nik')->on('dosens')->onUpdate('cascade')->onDelete('cascade');
+        });
+       
     }
 
     /**

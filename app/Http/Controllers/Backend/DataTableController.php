@@ -53,7 +53,7 @@ class DataTableController extends Controller
     public function dataTableMahasiswa(Request $request)
     {
         if ($request->ajax()) {
-            $datas = Mahasiswa::all();
+            $datas = Mahasiswa::with(['prodi','kelas'])->get();
 
             return DataTables::of($datas)
                 ->addIndexColumn()
@@ -66,10 +66,17 @@ class DataTableController extends Controller
                     }
                     return $img;
                 })
-               
+                ->addColumn('persen_hadir', function($row){
+                    return $row->persen_hadir.' %';
+                })
+                ->addColumn('prodi', function($row){
+                    return $row->prodi->nama_prodi;
+                })
+                ->addColumn('kelas', function($row){
+                    return $row->kelas->nama_kelas;
+                })
                 ->addColumn('action', function($row){
-                    $btn = '<a class="btn btn-sm btn-outline-primary" href="#"> <i class="fas fa-eye"></i> view</a> 
-                            <button type="button" class="edit btn btn-sm btn-default" data-id="'.\Crypt::encrypt($row->nim).'" data-nim="'.$row->nim.'" data-nama="'.$row->nama.'" data-foto="'.$row->foto.'" data-kode_prodi="'.$row->kode_prodi.'" data-kelas_id="'.$row->kelas_id.'" data-semester="'.$row->semester.'" data-telp="'.$row->telp.'" data-email="'.$row->email.'" data-dosen="'.$row->dosen.'" data-foto="'.$row->foto.'" data-status="'.$row->status.'" data-url="'.config('services.image.baseUrl').config('services.image.path').'/'.$row->foto.'"> <i class="fas fa-edit"></i> Edit</button>
+                    $btn = '<button type="button" class="edit btn btn-sm btn-default" data-id="'.\Crypt::encrypt($row->nim).'" data-nim="'.$row->nim.'" data-nama="'.$row->nama.'" data-foto="'.$row->foto.'" data-kode_prodi="'.$row->kode_prodi.'" data-kelas_id="'.$row->kelas_id.'" data-semester="'.$row->semester.'" data-telp="'.$row->telp.'" data-email="'.$row->email.'" data-dosen="'.$row->dosen.'" data-foto="'.$row->foto.'" data-status="'.$row->status.'" data-url="'.config('services.image.baseUrl').config('services.image.path').'/'.$row->foto.'"> <i class="fas fa-edit"></i> Edit</button>
                             <button type="button" class="hapus btn btn-sm btn-danger" data-id="'.\Crypt::encrypt($row->nim).'"> <i class="fas fa-trash"></i> Hapus</button>';
                     return $btn;
                 })
@@ -78,7 +85,6 @@ class DataTableController extends Controller
                     $btn = '<a href="/krs/'.$ids.'" class="hapus btn btn-sm btn-success"> <i class="fas fa-eye"></i> Tambah Krs</a>';
                     return $btn;
                 })
-               
                 ->rawColumns(['action','action2','gambar'])
                 ->escapeColumns()
                 ->toJson(); 
@@ -283,8 +289,10 @@ class DataTableController extends Controller
 
             if(Auth::guard('admin')->check()){
                 $datas = Jadwal::with(['matakuliah','ruangan','kelas','dosens','hari'])->get();
+            }elseif(Auth::guard('dosen')->check()){
+                $datas = Jadwal::with(['matakuliah','ruangan','kelas','dosens','hari'])->where('dosen',Auth::guard('dosen')->user()->nik)->get();
             }else{
-                $datas = Jadwal::with(['matakuliah','ruangan','kelas','dosens','hari'])->where('dosen',Auth::guard('admin')->user()->nik)->get();
+                $datas = [];
             }
            
             return DataTables::of($datas)
@@ -335,8 +343,13 @@ class DataTableController extends Controller
                 })*/
                 ->addColumn('action', function($row){
                     $ids = \Crypt::encrypt($row->kode_jadwal);
-                    $btn = '<button type="button" class="edit btn btn-sm btn-default" data-id="'.$ids.'" data-kode_jadwal="'.$row->kode_jadwal.'" data-kode_matakuliah="'.$row->kode_matakuliah.'" data-hari_id="'.$row->hari_id.'" data-jam_mulai="'.$row->jam_mulai.'" data-jam_selesai="'.$row->jam_selesai.'" data-kode_ruang="'.$row->kode_ruang.'" data-kelas_id="'.$row->kelas_id.'" data-dosen="'.$row->dosen.'"> <i class="fas fa-edit"></i> Edit</button>
-                            <button type="button" class="hapus btn btn-sm btn-danger" data-id="'.$ids.'"> <i class="fas fa-trash"></i> Hapus</button>';
+                    if(Auth::guard('admin')->check()){
+                        $btn = '<button type="button" class="edit btn btn-sm btn-default" data-id="'.$ids.'" data-kode_jadwal="'.$row->kode_jadwal.'" data-kode_matakuliah="'.$row->kode_matakuliah.'" data-hari_id="'.$row->hari_id.'" data-jam_mulai="'.$row->jam_mulai.'" data-jam_selesai="'.$row->jam_selesai.'" data-kode_ruang="'.$row->kode_ruang.'" data-kelas_id="'.$row->kelas_id.'" data-dosen="'.$row->dosen.'"> <i class="fas fa-edit"></i> Edit</button>
+                        <button type="button" class="hapus btn btn-sm btn-danger" data-id="'.$ids.'"> <i class="fas fa-trash"></i> Hapus</button>';
+                    }else{
+                        $btn = '';
+                    }
+                    
                     return $btn;
                 })
                 ->addColumn('action2', function($row){

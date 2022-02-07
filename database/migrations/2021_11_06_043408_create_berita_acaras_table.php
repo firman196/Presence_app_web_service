@@ -27,13 +27,11 @@ class CreateBeritaAcarasTable extends Migration
             $table->string('media_perkuliahan',100)->nullable();
             $table->text('catatan_perkuliahan')->nullable();
             $table->timestamps();
+        });
 
-         /*   //relasi ke tabel jadwal
-            $table->foreign('kode_jadwal')
-                ->references('kode_jadwal')
-                ->on('jadwals')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');*/
+        //relasi ke tabel jenis_izins
+        Schema::table('berita_acaras', function (Blueprint $table) {
+            $table->foreign('kode_jadwal')->references('kode_jadwal')->on('jadwals')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

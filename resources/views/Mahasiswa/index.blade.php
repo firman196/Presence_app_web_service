@@ -38,10 +38,10 @@
                   <th>N0</th>
                   <th>NIM</th>
                   <th>NAMA</th>
-                  <th>ANGKATAN</th>
                   <th>PRODI</th>
                   <th>KELAS</th>
                   <th>SEMESTER</th>
+                  <th>PERSEN HADIR</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -384,18 +384,21 @@
                                         "className": "text-center"                                        
                                     },
                                     {
-                                        data: 'kode_prodi',
+                                        data: 'prodi',
                                         "className": "text-center"      
                                     },
                                     {
-                                        data: 'kelas_id',
+                                        data: 'kelas',
                                         "className": "text-center"      
                                     },
                                     {
                                         data: 'semester',
                                         "className": "text-center"      
                                     },
-                                   
+                                    {
+                                        data: 'persen_hadir',
+                                        "className": "text-center"      
+                                    },
                                     {
                                         data: 'action',
                                         "className": "text-center",

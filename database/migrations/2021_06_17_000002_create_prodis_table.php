@@ -13,13 +13,17 @@ class CreateProdisTable extends Migration
      */
     public function up()
     {
+
         Schema::create('prodis', function (Blueprint $table) {
             $table->string('kode_prodi',10)->primary();
             $table->string('nama_prodi',50);
             $table->string('jenjang',10);
-            $table->string('kaprodi',25)->nullable();
+            //$table->string('kaprodi',25)->nullable();
             $table->timestamps();
         });
+
+       
+
     }
 
     /**

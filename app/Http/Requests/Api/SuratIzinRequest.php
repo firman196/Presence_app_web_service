@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostSuratIzinRequest extends FormRequest
+class SuratIzinRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,9 +26,9 @@ class PostSuratIzinRequest extends FormRequest
         return [
             'kode_jenis_izin'       => 'required|string|max:5',
             'presensi_id'           => 'required|numeric',
-            'judul_surat_izin'      => 'required|string|max:255',
+            'judul_surat_izin'      => 'required|string',
             'keterangan_mahasiswa'  => 'required|string',
-            'foto_surat_izin'       => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'foto_surat_izin'       => 'required|image|mimes:jpg,png,jpeg,svg'
         ];
     }
 }

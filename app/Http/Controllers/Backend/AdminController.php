@@ -9,8 +9,11 @@ use App\Http\Requests\AdminUpdateRequest;
 use App\Helpers\ResponseFormatter;
 use DB;
 use File;
+use Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Admin;
+use App\Models\Dosen;
+use App\Rules\CurrentPassword;
 class AdminController extends Controller
 {
     /**
@@ -101,7 +104,7 @@ class AdminController extends Controller
      */
     public function show($id)
     {
-        //
+        
     }
 
     /**
@@ -209,6 +212,67 @@ class AdminController extends Controller
                 'error' => $e->getMessage(),
             ],'store data failed', 500);
         }     
+    }
+
+
+    /**
+     * show profil admin
+     */
+    public function indexPassword(){
+        return view('Profil.indexPassword',[
+            'title'         => 'Reset Password',
+            'subTitle'      => 'Amankan akun Anda dengan kombinasi password yang baik',
+            'breadcrumb'    => 'Reset Password',
+            'url'           => '/reset-password',
+        ]);
+    }
+
+
+     /**
+     * MERESET PASSWORD ADMIN 
+     * @param Request $request,$id
+     * @return \Illuminate\Http\Json
+     */
+    public function updatePassword(Request $request){
+        $rules = [
+            'current_password'      => ['required', 'string', new CurrentPassword()],
+            'password'              => ['required','string','min:8','confirmed'],
+        ];
+
+        $messages = [
+            'current_password.required' => 'Password lama wajib diisi',
+            'password.required'         => 'Password wajib diisi',
+            'password.min'              => 'Password minimal 6',
+            'password.confirmed'        => 'Password tidak sama dengan konfirmasi password',
+        ];
+
+        $this->validate($request, $rules, $messages);
+        DB::beginTransaction();  
+        try {
+            $password   = $request->password;
+            if(Auth::guard('admin')->check()){
+                Admin::where('nik',Auth::guard('admin')->user()->nik)->update(['password'=> Hash::make($password)]);
+                \Session::flash('status','success');
+                \Session::flash('message','Password berhasil diupdate!!');
+                DB::commit();
+                return redirect()->route('admin.index.password');
+            }else{
+                Dosen::where('nik',Auth::guard('dosen')->user()->nik)->update(['password'=> Hash::make($password)]);
+                \Session::flash('status','success');
+                \Session::flash('message','Password berhasil diupdate!!');
+                DB::commit();
+                return redirect()->route('dosen.index.password');
+            }
+        } catch (Exception $e) {
+            DB::rollback();
+            \Session::flash('status','error');
+            \Session::flash('message','Password gagal diupdate!!');
+            if(Auth::guard('admin')->check()){
+                return redirect()->route('admin.index.password');
+            }else{
+                return redirect()->route('dosen.index.password');
+            }
+        }
     }
     
 }

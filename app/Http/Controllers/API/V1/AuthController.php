@@ -16,10 +16,7 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request){
         try {
-            
-            //get data user by username
             $user = Mahasiswa::with(['prodi','dosens','kelas'])->where('nim',$request['nim'])->first();
-            //jika login gagal
             if (!isset($user)) {
                 return ResponseFormatter::error([
                     'message' => 'Something went wrong',
@@ -33,7 +30,7 @@ class AuthController extends Controller
             ];
           
             if (auth()->attempt($login)) {
-                //jika login sukses
+               //generate sanctum token
                 $tokenResult = $user->createToken('authToken')->plainTextToken;
                 return ResponseFormatter::success([
                     'access_token' => $tokenResult,
@@ -42,8 +39,7 @@ class AuthController extends Controller
                 ],'Authenticated');
              
             }
-
-         
+            
             //jika login gagal
             return ResponseFormatter::error([ 
                 'message' => 'Unauthorized'

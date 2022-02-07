@@ -19,17 +19,15 @@ class CreateBeaconsTable extends Migration
             $table->string('uuid',255);
             $table->integer('major');
             $table->integer('minor');
-            $table->double('jarak_maksimal');
+            $table->integer('jarak_maksimal');
             $table->timestamps();
-
-            //relasi ke tabel ruangan
-          /*  $table->foreign('kode_ruang')
-                ->references('kode_ruang')
-                ->on('ruangans')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');*/
-
         });
+
+        //relasi ke tabel ruangans
+        Schema::table('beacons', function (Blueprint $table) {
+            $table->foreign('kode_ruang')->references('kode_ruang')->on('ruangans')->onUpdate('cascade')->onDelete('cascade');
+        });
+
     }
 
     /**

@@ -20,20 +20,16 @@ class CreateKrsTable extends Migration
             $table->date('tanggal_krs');
             $table->integer('persen_hadir')->default(0);
             $table->timestamps();
+        });
 
-            //relasi ke tabel jadwal
-            $table->foreign('kode_jadwal')
-                ->references('kode_jadwal')
-                ->on('jadwals')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+        //relasi ke tabel jadwals
+        Schema::table('krs', function (Blueprint $table) {
+            $table->foreign('kode_jadwal')->references('kode_jadwal')->on('jadwals')->onUpdate('cascade')->onDelete('cascade');
+        });
 
-            //relasi ke tabel jadwal
-            $table->foreign('nim')
-                ->references('nim')
-                ->on('mahasiswas')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+        //relasi ke tabel mahasiswas
+        Schema::table('krs', function (Blueprint $table) {
+            $table->foreign('nim')->references('nim')->on('mahasiswas')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

@@ -88,7 +88,11 @@
             <div id="collapse{{ $presensi->pertemuan_ke }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
               <div class="card-body">
                 <div class="row">
-                    <a href="#" id="generate-pertemuan" class="ml-auto mb-4 generate-pertemuan btn btn-icon btn-default" data-id="{{ \Crypt::encrypt($presensi->id) }}" data-hari_id="{{ $presensi->hari_id}}" data-jam_presensi_dibuka="{{ $presensi->jam_presensi_dibuka}}" data-jam_presensi_ditutup="{{ $presensi->jam_presensi_ditutup }}" data-toleransi_keterlambatan="{{ $presensi->toleransi_keterlambatan }}">
+                    <a href="{{ (Auth::guard('dosen')->check())? url('dosen\cetak\presensi',\Crypt::encrypt($presensi->id)):url('cetak\presensi',\Crypt::encrypt($presensi->id))  }}" id="cetak" class="ml-auto mb-4 cetak btn btn-icon btn-success">
+                      <span class="btn-inner--icon"><i class="fas fa-print"></i></span>
+                      <span class="btn-inner--text">Cetak</span>
+                    </a>
+                    <a href="#" id="generate-pertemuan" class="ml-2 mb-4 generate-pertemuan btn btn-icon btn-default" data-id="{{ \Crypt::encrypt($presensi->id) }}" data-hari_id="{{ $presensi->hari_id}}" data-jam_presensi_dibuka="{{ $presensi->jam_presensi_dibuka}}" data-jam_presensi_ditutup="{{ $presensi->jam_presensi_ditutup }}" data-toleransi_keterlambatan="{{ $presensi->toleransi_keterlambatan }}">
                       <span class="btn-inner--icon"><i class="fas fa-sync-alt"></i></span>
                       <span class="btn-inner--text">Edit Settingan</span>
                     </a>
@@ -263,7 +267,7 @@
                                 $.ajax({
                                   type: 'PUT',
                                   data: $("#form-setting").serialize(),
-                                  url: "{{ url('presensi') }}/"+id,
+                                  url: "{{(Auth::guard('dosen')->check())? url('dosen/presensi'):url('presensi')}}/"+id,
                                   success : function(data){
                                       if(JSON.parse(data.meta.code) == 200){
                                           $('#Modal-setting').modal('hide');
@@ -285,40 +289,7 @@
                               }) 
                            });                         
                       });
-                      
-/*
-                      $('#tambah').on('click',function(e){
-                          $('#Modal-edit').modal();
-                          $('#modal-label').html('Tambah Data Beacon');
-                          $('#submit-data').html('Simpan');
-                          reset_model_value()
-                          $('#submit-data').on('click',function(e){
-                            reset_error()
-                            $.ajax({
-                                  type: 'POST',
-                                  data: $("#form-data").serialize(),
-                                  url: "{{ route('beacon.store') }}",
-                                  success : function(data){
-                                    if(JSON.parse(data.meta.code) == 200){
-                                        $('#Modal-edit').modal('hide');
-                                        swal.fire("Selesai","Beacon berhasil ditambahkan","success").then((val)=>{
-                                          location.reload();
-                                        });
-                                    }
-                                  },
-                                  error: function(xhr, status, err) {
-                                      var response = JSON.parse(xhr.responseText)
-                                      if(response.meta.code == 401){
-                                          error_message(response.data.error);
-                                      }
-                                      if(response.meta.code == 500){
-                                          toastr.error('Maaf terjadi kesalahan pada sistem. Coba Ulangi lagi !');
-                                      }
-                                  }
-                            });
-                        })                               
-                      });
-*/
+ 
                       $('#dataTable tbody').on('click', '.edit', function () {
                           $('#Modal-edit').modal();
                           $('#modal-edit-label').html('Edit Status Presensi Mahasiswa');
@@ -335,7 +306,7 @@
                             $.ajax({
                                 type: 'PUT',
                                 data: $("#form-status").serialize(),
-                                url: "{{ url('status/presensi') }}/"+id,
+                                url: "{{(Auth::guard('dosen')->check())? url('dosen/status/presensi'):url('status/presensi')}}/"+id,
                                 success : function(data){
                                   if(JSON.parse(data.meta.code) == 200){
                                         $('#Modal-edit').modal('hide');
@@ -356,30 +327,6 @@
                             });
                           })
                       });       
-
-                      $('#dataTable tbody').on('click', '.hapus', function () {
-                          var id          = $(this).data('id');
-                         
-                          $.ajax({
-                                    url:"{{ url('beacon/delete') }}/"+id,
-                                    data:{
-                                      "_token": "{{ csrf_token() }}"
-                                    },
-                                    type:"DELETE",
-                                    success : function(data){
-                                      if(JSON.parse(data.meta.code) == 200){
-                                        $('#Modal').modal('hide');
-                                        swal.fire("Selesai","Matakuliah berhasil dihapus","success").then((val)=>{
-                                          location.reload();
-                                        });
-                                      }
-                                    },
-                                    error:function(XMLHttpRequest){
-                                      toastr.error('Maaf terjadi kesalahan pada sistem. Coba Ulangi lagi !');
-                                    }
-                                });
-                      });
-
 
                      
                       //fetch data method
@@ -403,7 +350,7 @@
                                     }
                                 },
                                 ajax: {
-                                    url:"{{url('data/rekap-kehadiran')}}",
+                                    url:"{{(Auth::guard('dosen')->check())? url('dosen/data/rekap-kehadiran'):url('data/rekap-kehadiran')}}",
                                     type: "GET",
                                     data:{
                                       presensi_id : id

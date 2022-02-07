@@ -17,7 +17,7 @@ class CreateSuratIzinsTable extends Migration
             $table->id();
             $table->string('kode_jenis_izin',5);
             $table->string('nim',15);
-            $table->bigInteger('presensi_id');
+            $table->bigInteger('presensi_id')->unsigned();
             $table->string('judul_surat_izin',255);
             $table->text('keterangan_mahasiswa');
             $table->text('keterangan_dosen');
@@ -45,6 +45,16 @@ class CreateSuratIzinsTable extends Migration
                 ->on('presensis')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');*/
+        });
+
+        //relasi ke tabel jenis_izins
+        Schema::table('surat_izins', function (Blueprint $table) {
+            $table->foreign('kode_jenis_izin')->references('kode')->on('jenis_izins')->onUpdate('cascade')->onDelete('cascade');
+        });
+
+        //relasi ke tabel jenis_izins
+        Schema::table('surat_izins', function (Blueprint $table) {
+            $table->foreign('presensi_id')->references('id')->on('presensis')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

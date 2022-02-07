@@ -21,7 +21,7 @@ class GeneralHelper{
 
 
   public static function check_jam_presensi($presensi_dibuka,$presensi_ditutup,$toleransi){
-    $time = Carbon::now();
+    $time = Carbon::now()->timezone('Asia/Jakarta');
     if(strtotime($presensi_dibuka)<= strtotime($time) && strtotime($time)<=strtotime('+'.$toleransi.' minutes', strtotime($presensi_ditutup))){
       return true;
     }else{

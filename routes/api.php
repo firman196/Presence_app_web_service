@@ -42,4 +42,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 
    //logout
    Route::post('logout', [AuthController::class, 'logout']);
+
+    //post surat izin
+    Route::post('surat-izin',[SuratIzinController::class,'postSuratIzin']);
 });

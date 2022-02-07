@@ -29,13 +29,10 @@ class CreateDosensTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
-
-            //relasi ke tabel prodi
-           /* $table->foreign('kode_prodi')
-               ->references('kode_prodi')
-               ->on('prodis')
-               ->onUpdate('cascade')
-               ->onDelete('cascade');*/
+        });
+        //relasi ke tabel prodi
+        Schema::table('dosens', function (Blueprint $table) {
+            $table->foreign('kode_prodi')->references('kode_prodi')->on('prodis')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

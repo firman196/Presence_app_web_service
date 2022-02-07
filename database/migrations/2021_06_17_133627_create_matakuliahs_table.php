@@ -22,13 +22,11 @@ class CreateMatakuliahsTable extends Migration
             $table->string('kode_prodi',10);
             $table->integer('semester')->default(0);
             $table->timestamps();
+        });
 
-            //relasi ke tabel prodi
-            $table->foreign('kode_prodi')
-                ->references('kode_prodi')
-                ->on('prodis')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+        //relasi ke tabel ruangans
+        Schema::table('matakuliah', function (Blueprint $table) {
+            $table->foreign('kode_prodi')->references('kode_prodi')->on('prodis')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

@@ -15,7 +15,9 @@
             </nav>
           </div>
           <div class="col-lg-6 col-5 text-right">
-            <a href="#" id="tambah" class="btn btn-sm btn-neutral">Tambah</a>
+            @if(Auth::guard('admin')->check())
+              <a href="#" id="tambah" class="btn btn-sm btn-neutral">Tambah</a>
+            @endif
           </div>
         </div>
       </div>
@@ -145,6 +147,7 @@
           </div>
         </div>
       </div>
+    </div>
     <!-- Modal -->
     @endsection
 
@@ -175,7 +178,7 @@
                             $.ajax({
                                   type: 'POST',
                                   data: $("#form-data").serialize(),
-                                  url: "{{ route('jadwal.store') }}",
+                                  url: "{{ (Auth::guard('dosen')->check())? route('dosen.jadwal.store'):route('jadwal.store') }}",
                                   success : function(data){
                                     if(JSON.parse(data.meta.code) == 200){
                                         $('#Modal').modal('hide');
@@ -200,7 +203,7 @@
                       $('#dataTable tbody').on('click', '.edit', function () {
                           $('#Modal').modal();
                           $('#modal-label').html('Edit Data Matakuliah');
-                          $('#submit-data').html('Update Matakuliah');
+                          $('#submit-data').html('Simpan');
                           reset_model_value()
                          
                           var id                      = $(this).data('id');
@@ -227,7 +230,7 @@
                             $.ajax({
                                 type: 'PUT',
                                 data: $("#form-data").serialize(),
-                                url: "{{ url('jadwal/update') }}/"+id,
+                                url: "{{(Auth::guard('dosen')->check())? url('dosen/jadwal/update'):url('jadwal/update')}}/"+id,
                                 success : function(data){
                                     if(JSON.parse(data.meta.code) == 200){
                                         $('#Modal').modal('hide');
@@ -253,7 +256,7 @@
                           var id          = $(this).data('id');
                          
                           $.ajax({
-                                    url:"{{ url('jadwal/delete') }}/"+id,
+                                    url:"{{ (Auth::guard('dosen')->check())? url('dosen/jadwal/delete'):url('jadwal/delete')}}/"+id,
                                     data:{
                                       "_token": "{{ csrf_token() }}"
                                     },
@@ -295,7 +298,7 @@
                                     }
                                 },
                                 ajax: {
-                                    url:"{{route('data.jadwal')}}",
+                                    url:"{{(Auth::guard('dosen')->check())? route('dosen.data.jadwal'):route('data.jadwal')}}",
                                     type: "GET"
                                 },
                                 
